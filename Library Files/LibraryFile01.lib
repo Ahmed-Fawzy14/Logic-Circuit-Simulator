@@ -1,3 +1,1 @@
-Component_name, num_of_inputs, output_expression, delay_ps
-
 NAND2, 2, ~(i1&i2), 10000
