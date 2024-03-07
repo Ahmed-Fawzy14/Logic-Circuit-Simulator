@@ -33,7 +33,7 @@ private:
 public:
     void read_Cir_File();
 
-    //Will be used in 
+    //Will be used in
     void send_To_LogicGate();
 
 };
