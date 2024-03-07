@@ -1,9 +1,9 @@
 INPUTS:
-X1
-X2
-S
+A
+B
+C
 COMPONENTS:
-G0, NAND2, o1, S, S
-G1, NAND2, o2, X1, o1
-G2, NAND2, o3, X2, S
-G3, NAND2, Q, o2, o3
+C0, NAND2, O1, A, B
+C1, NOR2, O2, O1, C
+
+
