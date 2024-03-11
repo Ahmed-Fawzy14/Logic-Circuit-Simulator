@@ -1,0 +1,6 @@
+# ninja log v5
+14	643	7318838634172760	build.ninja	37b70dfb46d58ce2
+13	238	7318838637027259	CMakeFiles/Logic_Circuit_Simulator.dir/NAND.cpp.obj	9eb4d1dcd6a507ae
+1	752	7318838642166529	CMakeFiles/Logic_Circuit_Simulator.dir/Logic_Gate.cpp.obj	4a30ab8699a96c65
+7	1252	7318838647139618	CMakeFiles/Logic_Circuit_Simulator.dir/main.cpp.obj	62d0eec52c94d75b
+1252	1836	7318838652930237	Logic_Circuit_Simulator.exe	3f853844d19d3e18

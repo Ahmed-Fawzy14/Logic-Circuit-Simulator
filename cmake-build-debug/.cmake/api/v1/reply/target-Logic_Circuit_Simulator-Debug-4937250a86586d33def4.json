@@ -115,7 +115,7 @@
 		},
 		{
 			"backtrace" : 1,
-			"path" : "Logic_Circuit.h",
+			"path" : "Logic_Gate.h",
 			"sourceGroupIndex" : 1
 		},
 		{
@@ -132,7 +132,7 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "Logic_Circuit.cpp",
+			"path" : "Logic_Gate.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],
