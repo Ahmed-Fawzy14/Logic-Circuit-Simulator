@@ -19,6 +19,12 @@ private:
 
 public:
 
+    void Run();
+
+    bool Operator()
+    {
+        //will use usedGates[i].expression to access what is needed 
+    }
 
 };
 
