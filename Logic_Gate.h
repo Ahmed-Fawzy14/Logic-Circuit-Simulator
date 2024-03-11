@@ -61,7 +61,71 @@ public:
         cirType = "No Type";
 
     }
+    // Setters
+    void setName(const string& name) {
+        this->name = name;
+    }
 
+    void setNumOfInputs(int num_Of_Inputs) {
+        this->num_Of_Inputs = num_Of_Inputs;
+    }
+
+    void setDelayPs(int delay_ps) {
+        this->delay_ps = delay_ps;
+    }
+
+    void setExpression(const vector<string>& expression) {
+        this->expression = expression;
+    }
+
+    void setCirInputs(const vector<tuple<char, bool, int>>& cirInputs) {
+        this->cirInputs = cirInputs;
+    }
+
+    void setCirCompName(const string& cirCompName) {
+        this->cirCompName = cirCompName;
+    }
+
+    void setCirOutput(bool cirOutput) {
+        this->cirOutput = cirOutput;
+    }
+
+    void setCirType(const string& cirType) {
+        this->cirType = cirType;
+    }
+
+    // Getters
+    string getName() const {
+        return name;
+    }
+
+    int getNumOfInputs() const {
+        return num_Of_Inputs;
+    }
+
+    int getDelayPs() const {
+        return delay_ps;
+    }
+
+    vector<string> getExpression() const {
+        return expression;
+    }
+
+    vector<tuple<char, bool, int>> getCirInputs() const {
+        return cirInputs;
+    }
+
+    string getCirCompName() const {
+        return cirCompName;
+    }
+
+    bool getCirOutput() const {
+        return cirOutput;
+    }
+
+    string getCirType() const {
+        return cirType;
+    }
 
 
 };
