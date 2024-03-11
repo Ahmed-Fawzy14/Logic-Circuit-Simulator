@@ -55,14 +55,14 @@ build CMakeFiles/Logic_Circuit_Simulator.dir/main.cpp.obj: CXX_COMPILER__Logic_C
   OBJECT_DIR = CMakeFiles\Logic_Circuit_Simulator.dir
   OBJECT_FILE_DIR = CMakeFiles\Logic_Circuit_Simulator.dir
 
-build CMakeFiles/Logic_Circuit_Simulator.dir/NAND.cpp.obj: CXX_COMPILER__Logic_Circuit_Simulator_unscanned_Debug C$:/Users/Fawzy/Spring$ 2024/Digital$ Design$ I/Project$ 1/Logic-Circuit-Simulator/NAND.cpp || cmake_object_order_depends_target_Logic_Circuit_Simulator
-  DEP_FILE = CMakeFiles\Logic_Circuit_Simulator.dir\NAND.cpp.obj.d
+build CMakeFiles/Logic_Circuit_Simulator.dir/Logic_Gate.cpp.obj: CXX_COMPILER__Logic_Circuit_Simulator_unscanned_Debug C$:/Users/Fawzy/Spring$ 2024/Digital$ Design$ I/Project$ 1/Logic-Circuit-Simulator/Logic_Gate.cpp || cmake_object_order_depends_target_Logic_Circuit_Simulator
+  DEP_FILE = CMakeFiles\Logic_Circuit_Simulator.dir\Logic_Gate.cpp.obj.d
   FLAGS = -g -fdiagnostics-color=always
   OBJECT_DIR = CMakeFiles\Logic_Circuit_Simulator.dir
   OBJECT_FILE_DIR = CMakeFiles\Logic_Circuit_Simulator.dir
 
-build CMakeFiles/Logic_Circuit_Simulator.dir/Logic_Gate.cpp.obj: CXX_COMPILER__Logic_Circuit_Simulator_unscanned_Debug C$:/Users/Fawzy/Spring$ 2024/Digital$ Design$ I/Project$ 1/Logic-Circuit-Simulator/Logic_Gate.cpp || cmake_object_order_depends_target_Logic_Circuit_Simulator
-  DEP_FILE = CMakeFiles\Logic_Circuit_Simulator.dir\Logic_Gate.cpp.obj.d
+build CMakeFiles/Logic_Circuit_Simulator.dir/circuit.cpp.obj: CXX_COMPILER__Logic_Circuit_Simulator_unscanned_Debug C$:/Users/Fawzy/Spring$ 2024/Digital$ Design$ I/Project$ 1/Logic-Circuit-Simulator/circuit.cpp || cmake_object_order_depends_target_Logic_Circuit_Simulator
+  DEP_FILE = CMakeFiles\Logic_Circuit_Simulator.dir\circuit.cpp.obj.d
   FLAGS = -g -fdiagnostics-color=always
   OBJECT_DIR = CMakeFiles\Logic_Circuit_Simulator.dir
   OBJECT_FILE_DIR = CMakeFiles\Logic_Circuit_Simulator.dir
@@ -75,7 +75,7 @@ build CMakeFiles/Logic_Circuit_Simulator.dir/Logic_Gate.cpp.obj: CXX_COMPILER__L
 #############################################
 # Link the executable Logic_Circuit_Simulator.exe
 
-build Logic_Circuit_Simulator.exe: CXX_EXECUTABLE_LINKER__Logic_Circuit_Simulator_Debug CMakeFiles/Logic_Circuit_Simulator.dir/main.cpp.obj CMakeFiles/Logic_Circuit_Simulator.dir/NAND.cpp.obj CMakeFiles/Logic_Circuit_Simulator.dir/Logic_Gate.cpp.obj
+build Logic_Circuit_Simulator.exe: CXX_EXECUTABLE_LINKER__Logic_Circuit_Simulator_Debug CMakeFiles/Logic_Circuit_Simulator.dir/main.cpp.obj CMakeFiles/Logic_Circuit_Simulator.dir/Logic_Gate.cpp.obj CMakeFiles/Logic_Circuit_Simulator.dir/circuit.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\Logic_Circuit_Simulator.dir

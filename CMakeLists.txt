@@ -5,4 +5,6 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_executable(Logic_Circuit_Simulator main.cpp
         Logic_Gate.h
-        Logic_Gate.cpp)
+        Logic_Gate.cpp
+        circuit.h
+        circuit.cpp)

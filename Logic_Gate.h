@@ -61,6 +61,14 @@ public:
         cirType = "No Type";
 
     }
+
+    //Funcitons
+
+    void sort_Cir_inputs();
+
+
+
+
     // Setters
     void setName(const string& name) {
         this->name = name;
@@ -126,6 +134,7 @@ public:
     string getCirType() const {
         return cirType;
     }
+
 
 
 };
