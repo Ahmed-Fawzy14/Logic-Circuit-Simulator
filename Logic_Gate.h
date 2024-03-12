@@ -33,7 +33,12 @@ private:
 
     //Will be filled with data from the .stim file
     //The tuple is formatted as follows: Input name, Logic Value, Propagation Delay
-    vector<tuple<char, bool, int>> cirInputs;
+    tuple<char,bool,int> x = {'A', 1, 100};
+    tuple<char,bool,int> y = {'b', 1, 200};
+    tuple<char,bool,int> z = {'C', 0, 300};
+
+
+    vector<tuple<char, bool, int>> cirInputs = {y,x,z};
 
     //Name as in .cir file
     string cirCompName;

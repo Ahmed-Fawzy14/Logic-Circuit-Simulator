@@ -21,5 +21,11 @@ int main() {
 
     //upload the files
 
+    test_Obj.sort_Cir_inputs();
+
+    for(auto x : test_Obj.getCirInputs())
+    {
+        cout<<get<2>(x)<<endl;
+    }
     return 0;
 }

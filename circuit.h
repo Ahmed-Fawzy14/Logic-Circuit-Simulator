@@ -23,7 +23,7 @@ public:
 
     bool Operator()
     {
-        //will use usedGates[i].expression to access what is needed 
+        //will use usedGates[i].expression to access what is needed
     }
 
 };
