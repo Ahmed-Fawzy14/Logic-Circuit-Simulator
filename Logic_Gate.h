@@ -30,21 +30,28 @@ private:
 
     //The logic gate that will be used will have the following data elements used
 
-
+/////////////////////////////////////////////////////////////////////////////////////
     //Will be filled with data from the .stim file
     //The tuple is formatted as follows: Input name, Logic Value, Propagation Delay
     tuple<char,bool,int> x = {'A', 1, 100};
-    tuple<char,bool,int> y = {'b', 1, 200};
+    tuple<char,bool,int> y = {'B', 1, 200};
     tuple<char,bool,int> z = {'C', 0, 300};
 
 
     vector<tuple<char, bool, int>> cirInputs = {y,x,z};
 
+    //Initialized as 0
+    bool cirOutput = 0;
+///////////////////////////////////////////////////////////////////////////////////////
+
+    vector<string> cir_Input_Names;
+    cir_Input_Names.resize(num_of_Inputs);
     //Name as in .cir file
     string cirCompName;
 
-    //Initialized as 0
-    bool cirOutput = 0;
+    string cir_Output_Name;
+
+
 
     //Will take the same value as name
     string cirType;
