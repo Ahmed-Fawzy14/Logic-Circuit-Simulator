@@ -20,6 +20,9 @@ private:
     //This is the worst case propogation delay in ps
     int propgration_Delay_ps;
 
+    //This is the final time in the .stim file
+    int time_End;
+
 
 public:
 
