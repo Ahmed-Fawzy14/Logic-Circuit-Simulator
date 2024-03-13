@@ -43,8 +43,9 @@ private:
     //Initialized as 0
     bool cirOutput = 0;
 ///////////////////////////////////////////////////////////////////////////////////////
+//string is the name from the .cir file and int is initalized to -1 until .stim applies a value then we only run this again if it changes
 
-    vector<string> cir_Input_Names;
+    vector<pair<string,int>> cir_Input_Names;
     cir_Input_Names.resize(num_of_Inputs);
     //Name as in .cir file
     string cirCompName;
