@@ -42,6 +42,26 @@ void read_lib_file()
     }
  
 }
+void read_stim_file()
+{
+       string line, Input, value, timestamp;
+    input.open("C:/Users/Power/Desktop/Project dd1/500, B, 1.txt");
+    vector<tuple<char, bool, int>> inputs;
+
+    while (getline(input, line)) 
+    {
+
+        istringstream subst(line);
+        getline(subst, timestamp, ',');
+        getline(subst, Input, ',');
+        getline(subst, value, ',');
+        char letter = Input[0];
+
+        tuple<char, bool, int> I(letter,  stoi(value), stoi(timestamp));
+        inputs.push_back(I);
+
+    }
+}
 
 int main()
 {
