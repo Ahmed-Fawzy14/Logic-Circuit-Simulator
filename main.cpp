@@ -15,7 +15,6 @@ void read_lib_file()
     string line, name, no_of_inputs, delay, expression;
     input.open("C:/Users/Power/Desktop/Project dd1/INV, 1, ~(i1), 50.txt");
     vector <Logic_Gate> v;
-    int j = 0;
     while (getline(input, line)) 
     {
 
