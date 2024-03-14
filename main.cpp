@@ -6,7 +6,7 @@
 #include "Logic_Gate.cpp"
 using namespace std;
 
-int main()
+void read_lib_file()
 {
 ifstream input;
 string line, name, no_of_inputs, delay, expression;
@@ -47,6 +47,10 @@ while (getline(input, line))
         inputs.push_back(I);
 
     }
+}
+
+void run()
+{
     circuit C;
     C.setusedGates(v); // v should be replaced with the vector of gates from circ file
     C.setcirInputs(inputs);
@@ -78,11 +82,11 @@ while (getline(input, line))
                 {
                     // store the output expression in (cirinputs) with the current time + delay
                     //
-                    //This adds the expression_output but needs time in third and name of output from .cir used gates for first 
+                    //This adds the expression_output but needs time in third and name of output from .cir used gates for first
+            }*/ 
                     v.push_back(, make_tuple(expression_Output, ))
                 }
 
-            }*/
             
 
             
@@ -102,7 +106,37 @@ while (getline(input, line))
     tuple <char, bool, int> Final_output = VE.back();
     write_to_sim(C);
     
+}
 
+int main()
+{
+
+///////Testing
+
+    circuit c1;
+    c1.read_lib_file();
+    c1.readfile();
+    c1.run();
+    circuit c2;
+    c2.read_lib_file();
+    c2.readfile();
+    c2.run();
+    circuit c3;
+    c3.read_lib_file();
+    c3.readfile();
+    c3.run();
+    circuit c4;
+    c4.read_lib_file();
+    c4.readfile();
+    c4.run();
+    circuit c5;
+    c5.read_lib_file();
+    c5.readfile();
+    c5.run();
+    circuit c6;
+    c6.read_lib_file();
+    c6.readfile();
+    c6.run();
 
 
     return 0;
