@@ -103,18 +103,14 @@ void objectmodification(vector<vector<string>> &components)
             if(j%2 != 0)
             {
                 if((map[i1].second).first == "&")
-                    output = output & ((y.second).second & (y.second).second);
                     output = output & ((map[i1].second).second & (map[i1].second).second);
             }
         }
 
 
-        return 0;
         return output;
     }
 
-        return output;
-    }
 
 
   
