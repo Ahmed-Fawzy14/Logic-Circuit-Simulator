@@ -59,6 +59,9 @@ public:
     }
 
     
+    void objectmodification(vector<vector<string>> &components);
+    void readfile(ifstream &inputfile);
+    void fillvector(vector<vector<string>> &components, ifstream &inputfile);
 };
 
 
