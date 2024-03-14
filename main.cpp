@@ -4,6 +4,7 @@
 #include <sstream>
 #include "circuit.cpp"
 #include "Logic_Gate.cpp"
+#include "unordered_map"
 using namespace std;
 
 void read_lib_file()
