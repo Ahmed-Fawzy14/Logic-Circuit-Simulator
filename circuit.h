@@ -4,9 +4,13 @@
 
 #ifndef LOGIC_CIRCUIT_SIMULATOR_CIRCUIT_H
 #define LOGIC_CIRCUIT_SIMULATOR_CIRCUIT_H
+<<<<<<< HEAD
 #include "Logic_Gate.h"
 #include <unordered_map>
+=======
+>>>>>>> b2374a8315d55300eae586b0b05a2ea6a1a00865
 #include <queue>
+#include "Logic_Gate.cpp"
 
 class circuit {
 private:
@@ -24,8 +28,12 @@ private:
     //This is the final time in the .stim file
     int time_End;
 
+     vector<tuple<char, bool, int>> cirInputs;
+
 
 public:
+
+
 
     void Run();
 
@@ -74,7 +82,27 @@ public:
 
         return 0;
     }
+    void setusedGates(vector <Logic_Gate> gates)
+    {
+        usedGates = gates;
+    }
 
+    void setcirInputs(vector<tuple<char, bool, int>> inputs)
+    {
+        cirInputs = inputs;
+    }
+
+    vector <Logic_Gate> getusedGates()
+    {
+       return usedGates;
+    }
+
+    vector <tuple<char, bool, int>> getcirInputs()
+    {
+        return cirInputs;
+    }
+
+    
 };
 
 
