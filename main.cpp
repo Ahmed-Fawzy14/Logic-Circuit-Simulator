@@ -12,7 +12,9 @@ void read_lib_file()
 ifstream input;
 string line, name, no_of_inputs, delay, expression;
 input.open("C:/Users/Power/Desktop/Project dd1/INV, 1, ~(i1), 50.txt");
-vector <Logic_Gate> v;
+// vector<Logic_Gate> v;
+    unordered_map<string, Logic_Gate> librarygates;
+
 while (getline(input, line)) 
 {
 
@@ -27,7 +29,8 @@ while (getline(input, line))
         Expressions[i] = expression[i];
     }
     Logic_Gate* gate= new Logic_Gate(name, stoi(no_of_inputs), stoi(delay), Expressions);
-    v.push_back(*gate);
+    // v.push_back(*gate);
+        librarygates[name] = *gate;
     }    
     input.close();
 
@@ -53,7 +56,7 @@ while (getline(input, line))
 void run()
 {
     circuit C;
-    C.setusedGates(v); // v should be replaced with the vector of gates from circ file
+    // C.setusedGates(v); // v should be replaced with the vector of gates from circ file
     C.setcirInputs(inputs);
 
     tuple <char, bool, int> temp = C.getcirInputs().back();
