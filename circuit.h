@@ -4,8 +4,8 @@
 
 #ifndef LOGIC_CIRCUIT_SIMULATOR_CIRCUIT_H
 #define LOGIC_CIRCUIT_SIMULATOR_CIRCUIT_H
-#include "Logic_Gate.h"
 #include <queue>
+#include "Logic_Gate.cpp"
 
 class circuit {
 private:
@@ -23,8 +23,12 @@ private:
     //This is the final time in the .stim file
     int time_End;
 
+     vector<tuple<char, bool, int>> cirInputs;
+
 
 public:
+
+
 
     void Run();
 
@@ -32,7 +36,27 @@ public:
     {
         //will use usedGates[i].expression to access what is needed
     }
+    void setusedGates(vector <Logic_Gate> gates)
+    {
+        usedGates = gates;
+    }
 
+    void setcirInputs(vector<tuple<char, bool, int>> inputs)
+    {
+        cirInputs = inputs;
+    }
+
+    vector <Logic_Gate> getusedGates()
+    {
+       return usedGates;
+    }
+
+    vector <tuple<char, bool, int>> getcirInputs()
+    {
+        return cirInputs;
+    }
+
+    
 };
 
 
