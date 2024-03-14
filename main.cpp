@@ -1,10 +1,10 @@
 #include <fstream> // Including the fstream library to read files
-#include <iostream> 
+#include <iostream> // Including the iostream library in case of couting any output for debugging or clarity purposes
 #include <string> // Including the string library to use string functions
 #include <sstream> // Including the sstream library to store data from files into variables using delimiters
 #include "circuit.cpp" // Including the circuit.cpp file to create an object for each circuit
 #include "Logic_Gate.cpp" // Including the Logic_Gate.cpp file to create an object for each gate in the lib file
-#include "unordered_map"
+#include "unordered_map" // Including the unordered_map class to be used in the storing of gates
 using namespace std;
 
 unordered_map<string, Logic_Gate>  read_lib_file() // function to read lib file
@@ -60,6 +60,7 @@ while (getline(input, line))
     {
         // Declaring stringstream object and initializing it with a string (line) to be used in reading the data using delimiters
         istringstream subst(line);
+        
         // Reading the data from each line
         getline(subst, timestamp, ',');
         getline(subst, Input, ',');
@@ -93,6 +94,7 @@ void run()
     // A while loop to respresent the simulation time 
     while (time_end != clock_sim)
     {
+        // Storing the cicInputs into a vector V to easily use its functions
         vector <tuple <char, bool, int>> V = C.getcirInputs();
         auto element = V[i];
         clock_sim = get <2> (element);
@@ -188,7 +190,7 @@ ifstream inputfile;
     {
         vector<tuple <char, bool, int>> v; // Declaring a vector of tuples to store the cirinputs for simplicity
         
-        v = C.getcirInputs(); // Storing the cirinputs in the vector v\
+        v = C.getcirInputs(); // Storing the cirinputs in the vector v
         
         ofstream output; // Declaring an ofstream object to write the output into the file
         
