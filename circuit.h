@@ -36,50 +36,8 @@ public:
     void Run();
 
     //Send the index of the object in usedGates to this function and the current cir_Input_Names
-    bool Operator(int index,  vector<pair<string,int>> cir_Input_Names)
-    {
-        Logic_Gate gate = usedGates[index];
+    bool Operator(int index,  vector<pair<string,int>> cir_Input_Names);
 
-        vector<string> exp = gate.getExpression();
-
-        //maps the value to its input var
-        unordered_map<string, pair<string,int>> map;
-
-        int i =0;
-        for(auto x : exp)
-        {
-            if(i%2 == 0)
-            {
-                map[x] = cir_Input_Names[i];
-                i++;
-            }
-            else
-            {
-
-                if(x == "&")
-                    map[x] = make_pair("&", -2);
-                //add the rest of the operators
-            }
-
-        }
-
-        int j =0;
-        bool output = 0;
-        for(int j = 0; j<map.size(); j++)
-        {
-            string i1 = exp[j];
-            string i2{};
-
-            if(j%2 != 0)
-            {
-                if((map[i1].second).first == "&")
-                    output = output & ((y.second).second & (y.second).second);
-            }
-        }
-
-
-        return 0;
-    }
     void setusedGates(vector <Logic_Gate> gates)
     {
         usedGates = gates;
@@ -101,6 +59,9 @@ public:
     }
 
     
+    void objectmodification(vector<vector<string>> &components);
+    void readfile(ifstream &inputfile);
+    void fillvector(vector<vector<string>> &components, ifstream &inputfile);
 };
 
 

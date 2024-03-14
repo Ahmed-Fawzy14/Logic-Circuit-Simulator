@@ -4,14 +4,17 @@
 #include <sstream>
 #include "circuit.cpp"
 #include "Logic_Gate.cpp"
+#include "unordered_map"
 using namespace std;
 
-int main()
+void read_lib_file()
 {
 ifstream input;
 string line, name, no_of_inputs, delay, expression;
 input.open("C:/Users/Power/Desktop/Project dd1/INV, 1, ~(i1), 50.txt");
-vector <Logic_Gate> v;
+// vector<Logic_Gate> v;
+    unordered_map<string, Logic_Gate> librarygates;
+
 while (getline(input, line)) 
 {
 
@@ -26,7 +29,8 @@ while (getline(input, line))
         Expressions[i] = expression[i];
     }
     Logic_Gate* gate= new Logic_Gate(name, stoi(no_of_inputs), stoi(delay), Expressions);
-    v.push_back(*gate);
+    // v.push_back(*gate);
+        librarygates[name] = *gate;
     }    
     input.close();
 
@@ -47,8 +51,12 @@ while (getline(input, line))
         inputs.push_back(I);
 
     }
+}
+
+void run()
+{
     circuit C;
-    C.setusedGates(v); // v should be replaced with the vector of gates from circ file
+    // C.setusedGates(v); // v should be replaced with the vector of gates from circ file
     C.setcirInputs(inputs);
 
     tuple <char, bool, int> temp = C.getcirInputs().back();
@@ -78,11 +86,11 @@ while (getline(input, line))
                 {
                     // store the output expression in (cirinputs) with the current time + delay
                     //
-                    //This adds the expression_output but needs time in third and name of output from .cir used gates for first 
+                    //This adds the expression_output but needs time in third and name of output from .cir used gates for first
+            }*/ 
                     v.push_back(, make_tuple(expression_Output, ))
                 }
 
-            }*/
             
 
             
@@ -102,9 +110,49 @@ while (getline(input, line))
     tuple <char, bool, int> Final_output = VE.back();
     write_to_sim(C);
     
+}
 
+int main()
+{
 
+///////Testing
 
+    circuit c1;
+    c1.read_lib_file();
+    c1.readfile();
+    c1.run();
+    circuit c2;
+    c2.read_lib_file();
+    c2.readfile();
+    c2.run();
+    circuit c3;
+    c3.read_lib_file();
+    c3.readfile();
+    c3.run();
+    circuit c4;
+    c4.read_lib_file();
+    c4.readfile();
+    c4.run();
+    circuit c5;
+    c5.read_lib_file();
+    c5.readfile();
+    c5.run();
+    circuit c6;
+    c6.read_lib_file();
+    c6.readfile();
+    c6.run();
+//tony's circuit main
+ifstream inputfile;
+    inputfile.open(".cir_file"); // opening the file
+    readfile(inputfile);
+
+    // 2d vector delaration
+    vector<vector<string>> components;
+    fillvector(components, inputfile);
+
+    objectmodification(components);
+
+    
     return 0;
 }
     void write_to_sim(circuit C)
