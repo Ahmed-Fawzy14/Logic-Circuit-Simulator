@@ -60,7 +60,6 @@ void objectmodification(vector<vector<string>> &components)
             g1.setCirOutput(components[i][2]);   // assign output to gate object
             g1.setCirCompName(components[i][1]); // assign special name
             usedgates.push_back(g1);             // push to usedgates vector
-            setusedGates(usedgates2);            // set usedgates to usedgates2
         }
     }
 }
