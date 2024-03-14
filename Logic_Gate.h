@@ -137,7 +137,7 @@ public:
         return cirInputs;
     }
 
-    vector<pair<string,int>> get_cir_Input_Names const
+    vector<pair<string,int>> get_cir_Input_Names() const
     {
         return cir_Input_Names;
     }
