@@ -141,8 +141,18 @@ int main()
     c6.read_lib_file();
     c6.readfile();
     c6.run();
+//tony's circuit main
+ifstream inputfile;
+    inputfile.open(".cir_file"); // opening the file
+    readfile(inputfile);
 
+    // 2d vector delaration
+    vector<vector<string>> components;
+    fillvector(components, inputfile);
 
+    objectmodification(components);
+
+    
     return 0;
 }
     void write_to_sim(circuit C)
