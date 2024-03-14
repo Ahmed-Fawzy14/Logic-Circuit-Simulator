@@ -69,6 +69,26 @@ while (getline(input, line))
         return inputs;
     }
 
+    // A function to write the output into a file (sim file)
+    void write_to_sim(circuit C)
+    {
+        vector<tuple <char, bool, int>> v; // Declaring a vector of tuples to store the cirinputs for simplicity
+        
+        v = C.getcirInputs(); // Storing the cirinputs in the vector v
+        
+        ofstream output; // Declaring an ofstream object to write the output into the file
+        
+        output.open("sim.txt"); // Opening the file in which the output will be written
+
+        // A loop to write the output in the format of a sim file (timestamp, input_name, value)
+        for(int i = 0; i < v.size(); i++)
+        {
+            auto element = v[i];
+            output <<  get<2> (element) << " " << get<0> (element) << " " << get<1> (element) << endl;
+
+        }
+    }
+
 void run()
 {
     circuit C;
@@ -129,3 +149,5 @@ void run()
     write_to_sim(C); // Writing the output of the simulation into a file (sim file)
     
 }
+
+
