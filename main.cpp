@@ -6,10 +6,10 @@ using namespace std;
 #include <iostream>
 #include <string>
 #include <sstream>
-#include "Logic_Gate.cpp"
+//#include "Logic_Gate.cpp"
 using namespace std;
 
-void read_lib_file()
+/*void read_lib_file()
 {
     ifstream input;
     string line, name, no_of_inputs, delay, expression;
@@ -62,11 +62,12 @@ void read_stim_file()
 
     }
 }
+*/
 
 int main()
 {
 //Abdeen's Read File
-    read_lib_file();
+   // read_lib_file();
 //Code from Fawzy's Main
     
     vector<string> testExp = {"A1", "&", "A2"};

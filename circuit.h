@@ -5,6 +5,7 @@
 #ifndef LOGIC_CIRCUIT_SIMULATOR_CIRCUIT_H
 #define LOGIC_CIRCUIT_SIMULATOR_CIRCUIT_H
 #include "Logic_Gate.h"
+#include <unordered_map>
 #include <queue>
 
 class circuit {
@@ -15,7 +16,7 @@ private:
     //Use the vector for flagging method 
     vector<Logic_Gate> usedGates;
     //Use the Queue for popping method 
-    queue<Logic_Gate> usedGates;
+   // queue<Logic_Gate> usedGates;
 
     //This is the worst case propogation delay in ps
     int propgration_Delay_ps;
@@ -28,9 +29,50 @@ public:
 
     void Run();
 
-    bool Operator()
+    //Send the index of the object in usedGates to this function and the current cir_Input_Names
+    bool Operator(int index,  vector<pair<string,int>> cir_Input_Names)
     {
-        //will use usedGates[i].expression to access what is needed
+        Logic_Gate gate = usedGates[index];
+
+        vector<string> exp = gate.getExpression();
+
+        //maps the value to its input var
+        unordered_map<string, pair<string,int>> map;
+
+        int i =0;
+        for(auto x : exp)
+        {
+            if(i%2 == 0)
+            {
+                map[x] = cir_Input_Names[i];
+                i++;
+            }
+            else
+            {
+
+                if(x == "&")
+                    map[x] = make_pair("&", -2);
+                //add the rest of the operators
+            }
+
+        }
+
+        int j =0;
+        bool output = 0;
+        for(int j = 0; j<map.size(); j++)
+        {
+            string i1 = exp[j];
+            string i2{};
+
+            if(j%2 != 0)
+            {
+                if((map[i1].second).first == "&")
+                    output = output & ((y.second).second & (y.second).second);
+            }
+        }
+
+
+        return 0;
     }
 
 };

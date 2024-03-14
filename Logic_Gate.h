@@ -43,10 +43,11 @@ private:
     //Initialized as 0
     bool cirOutput = 0;
 ///////////////////////////////////////////////////////////////////////////////////////
-//string is the name from the .cir file and int is initalized to -1 until .stim applies a value then we only run this again if it changes
 
+//string is the name from the .cir file and int is initalized to -1 until .stim applies a value then we only run this again if it changes
+ //Inputs ust be entered in the same order of inputs as that of the 2D vector theat you read the .cir file with
     vector<pair<string,int>> cir_Input_Names;
-    cir_Input_Names.resize(num_of_Inputs);
+
     //Name as in .cir file
     string cirCompName;
 
