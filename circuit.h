@@ -4,11 +4,9 @@
 
 #ifndef LOGIC_CIRCUIT_SIMULATOR_CIRCUIT_H
 #define LOGIC_CIRCUIT_SIMULATOR_CIRCUIT_H
-<<<<<<< HEAD
 #include "Logic_Gate.h"
 #include <unordered_map>
-=======
->>>>>>> b2374a8315d55300eae586b0b05a2ea6a1a00865
+
 #include <queue>
 #include "Logic_Gate.cpp"
 
