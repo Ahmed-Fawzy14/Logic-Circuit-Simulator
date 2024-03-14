@@ -55,6 +55,8 @@ while (getline(input, line))
     int time_end = get<2>(temp);
     int clock_sim = 0;
     int i = 0;
+    int index_UsedGated = 0;
+    bool expression_Output = 0;
     while (time_end != clock_sim)
     {
         vector <tuple <char, bool, int>> V = C.getcirInputs();
@@ -63,14 +65,21 @@ while (getline(input, line))
 
         for (auto gate : C.getusedGates())
         {
+
+
+
+            expression_Output = c.operator(index_UsedGated, c.get_cir_Input_Names);
+
+            
            /* for ()
             {
                 // need input from circ file
                 if ( input exists )
                 {
-                    // call the Fawzy's operator function
                     // store the output expression in (cirinputs) with the current time + delay
-                
+                    //
+                    //This adds the expression_output but needs time in third and name of output from .cir used gates for first 
+                    v.push_back(, make_tuple(expression_Output, ))
                 }
 
             }*/
