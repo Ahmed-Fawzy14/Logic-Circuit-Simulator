@@ -116,6 +116,10 @@ public:
         this->cirType = cirType;
     }
 
+ vector<pair<string, int>> set_cir_Input_Names(pair<string, int> p1)
+    {
+        cir_Input_Names.push_back(p1);
+    }
     // Getters
     string getName() const {
         return name;
@@ -154,7 +158,10 @@ public:
         return cirType;
     }
 
-
+    vector<pair<string, int>> get_cir_Input_Names() const
+    {
+        return cir_Input_Names;
+    }
 
 };
 
