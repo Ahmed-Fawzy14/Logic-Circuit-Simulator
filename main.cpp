@@ -101,27 +101,24 @@ void run()
 
         for (auto gate : C.getusedGates())
         {
-
-
-            // Evaluating the boolean expression of the gate
-            expression_Output = c.operator(index_UsedGated, c.get_cir_Input_Names);
-
-            //Push the 
-            v.push_back(, make_tuple(expression_Output, ))
-            
          
             
                 // need input from circ file
                 if ( input exists )
                 {
                     // store the output expression in (cirinputs) with the current time + delay
-                    //
+
+                    // Evaluating the boolean expression of the gate
+                    expression_Output = c.operator(index_UsedGated, c.get_cir_Input_Names);
+                    
+                    //Push the output into cirInputs
+                    v.push_back( make_tuple(c.get_cir_Input_Names[index_UsedGated],expression_Output,clock_sim));
+
+     
                     //This adds the expression_output but needs time in third and name of output from .cir used gates for first
-            */ 
+                }
                    
                 
- 
-
         }
         vector<tuple<char, bool, int>> VE = C.getcirInputs();
         int time = get<2> (VE.back());
