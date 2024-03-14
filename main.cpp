@@ -143,7 +143,8 @@ int main()
 {
 
 ///////Testing
-
+    vector <Logic_Gate> V = read_lib_file();
+    
     circuit c1;
     c1.read_lib_file();
     c1.readfile();
