@@ -1,3 +1,12 @@
+#include <fstream> // Including the fstream library to read files
+#include <iostream> // Including the iostream library in case of couting any output for debugging or clarity purposes
+#include <string> // Including the string library to use string functions
+#include <sstream> // Including the sstream library to store data from files into variables using delimiters
+#include "circuit.cpp" // Including the circuit.cpp file to create an object for each circuit
+#include "Logic_Gate.cpp" // Including the Logic_Gate.cpp file to create an object for each gate in the lib file
+#include "unordered_map" // Including the unordered_map class to be used in the storing of gates
+using namespace std;
+
 unordered_map<string, Logic_Gate>  read_lib_file() // function to read lib file
 {
 // declaring an input stream and string variables
