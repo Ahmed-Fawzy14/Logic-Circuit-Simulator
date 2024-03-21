@@ -26,23 +26,10 @@ private:
 
     //Expression as in .lib file split into the following format:
     //input, operator, input, operator, input... so the odd index is always an operator
-    vector<string> expression;
+    string expression;
 
     //The logic gate that will be used will have the following data elements used
 
-/////////////////////////////////////////////////////////////////////////////////////
-    //Will be filled with data from the .stim file
-    //The tuple is formatted as follows: Input name, Logic Value, Propagation Delay
-    tuple<char,bool,int> x = {'A', 1, 100};
-    tuple<char,bool,int> y = {'B', 1, 200};
-    tuple<char,bool,int> z = {'C', 0, 300};
-
-
-    vector<tuple<char, bool, int>> cirInputs = {y,x,z};
-
-    //Initialized as 0
-    bool cirOutput = 0;
-///////////////////////////////////////////////////////////////////////////////////////
 
 //string is the name from the .cir file and int is initalized to -1 until .stim applies a value then we only run this again if it changes
  //Inputs ust be entered in the same order of inputs as that of the 2D vector theat you read the .cir file with
@@ -53,7 +40,8 @@ private:
 
     string cir_Output_Name;
 
-
+    //Initialized as 0
+    bool cirOutput = 0;
 
     //Will take the same value as name
     string cirType;
@@ -65,7 +53,7 @@ public:
 
     }
 
-    Logic_Gate(string name, int num_Of_Inputs, int delay_ps, vector<string> expression)
+    Logic_Gate(string name, int num_Of_Inputs, int delay_ps, string expression)
     {
         this->name = name;
         this->num_Of_Inputs = num_Of_Inputs;
@@ -73,12 +61,13 @@ public:
         this->expression = expression;
         cirCompName = "Unnamed";
         cirType = "No Type";
+        cir_Output_Name = "no name";
 
     }
 
     //Funcitons
 
-    void sort_Cir_inputs();
+   // void sort_Cir_inputs(circuit c);
 
 
 
@@ -96,13 +85,13 @@ public:
         this->delay_ps = delay_ps;
     }
 
-    void setExpression(const vector<string>& expression) {
+    void setExpression(const string& expression) {
         this->expression = expression;
     }
 
-    void setCirInputs(const vector<tuple<char, bool, int>>& cirInputs) {
-        this->cirInputs = cirInputs;
-    }
+//    void setCirInputs(const vector<tuple<char, bool, int>>& cirInputs) {
+  //      this->cirInputs = cirInputs;
+  //  }
 
     void setCirCompName(const string& cirCompName) {
         this->cirCompName = cirCompName;
@@ -116,9 +105,14 @@ public:
         this->cirType = cirType;
     }
 
- vector<pair<string, int>> set_cir_Input_Names(pair<string, int> p1)
+    void setCirOutputName(string cir_Output_Name)
     {
-        cir_Input_Names.push_back(p1);
+        this->cir_Output_Name = cir_Output_Name;
+    }
+
+    void set_cir_Input_Names(vector<pair<string, int>> cir_Input_Names)
+    {
+        this->cir_Input_Names = cir_Input_Names;
     }
     // Getters
     string getName() const {
@@ -133,17 +127,19 @@ public:
         return delay_ps;
     }
 
-    vector<string> getExpression() const {
+    string getExpression() const {
         return expression;
     }
 
-    vector<tuple<char, bool, int>> getCirInputs() const {
-        return cirInputs;
-    }
 
     vector<pair<string,int>> get_cir_Input_Names() const
     {
         return cir_Input_Names;
+    }
+
+    vector<pair<string,int>>& getREF_cir_Input_Names()
+    {
+        return this->cir_Input_Names;
     }
 
     string getCirCompName() const {
@@ -158,10 +154,11 @@ public:
         return cirType;
     }
 
-    vector<pair<string, int>> get_cir_Input_Names() const
-    {
-        return cir_Input_Names;
+    string getCirOutputName() const {
+        return cir_Output_Name;
     }
+
+
 
 };
 

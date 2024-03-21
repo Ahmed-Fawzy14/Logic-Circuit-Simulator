@@ -6,9 +6,7 @@
 #define LOGIC_CIRCUIT_SIMULATOR_CIRCUIT_H
 #include "Logic_Gate.h"
 #include <unordered_map>
-
 #include <queue>
-#include "Logic_Gate.cpp"
 
 class circuit {
 private:
@@ -26,7 +24,8 @@ private:
     //This is the final time in the .stim file
     int time_End;
 
-     vector<tuple<char, bool, int>> cirInputs;
+     vector<tuple<string, bool, int>> cirInputs;
+    unordered_map<string, tuple <string, bool, int>> current_Inputs_Map;
 
 
 public:
@@ -36,14 +35,29 @@ public:
     void Run();
 
     //Send the index of the object in usedGates to this function and the current cir_Input_Names
-    bool Operator(int index,  vector<pair<string,int>> cir_Input_Names);
+    //bool Operator(int index, vector<tuple <string, bool, int>> current_Inputs);
+
+    void setcurrent_Inputs_Map( unordered_map<string, tuple <string, bool, int>> current_Inputs_Map)
+    {
+        this->current_Inputs_Map = current_Inputs_Map;
+    }
+
+    unordered_map<string, tuple <string, bool, int>> getcurrent_Inputs_Map()
+    {
+        return current_Inputs_Map;
+    }
+
+    unordered_map<string, tuple <string, bool, int>>& getcurrent_Inputs_MapREF()
+    {
+        return this-> current_Inputs_Map;
+    }
 
     void setusedGates(vector <Logic_Gate> gates)
     {
         usedGates = gates;
     }
 
-    void setcirInputs(vector<tuple<char, bool, int>> inputs)
+    void setcirInputs(vector<tuple<string, bool, int>> inputs)
     {
         cirInputs = inputs;
     }
@@ -53,7 +67,12 @@ public:
        return usedGates;
     }
 
-    vector <tuple<char, bool, int>> getcirInputs()
+    vector <Logic_Gate>& getREF_usedGates()
+    {
+        return this->usedGates;
+    }
+
+    vector <tuple<string, bool, int>> getcirInputs()
     {
         return cirInputs;
     }

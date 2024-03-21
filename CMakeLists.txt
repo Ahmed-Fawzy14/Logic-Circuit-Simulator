@@ -7,4 +7,8 @@ add_executable(Logic_Circuit_Simulator main.cpp
         Logic_Gate.h
         Logic_Gate.cpp
         circuit.h
-        circuit.cpp)
+        circuit.cpp
+        testOperator.cpp
+        testOperator.h
+        program.cpp
+        testing.cpp)
