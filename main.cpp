@@ -81,73 +81,108 @@ void runProgram(circuit  c)
 int main(int argc, char **argv) {
 
     int x = 0;
+    char y;
 
 
-//Circuit 5
-    /*circuit c;
-    c.read_lib_file(
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5 - Copy.txt");
-    c.read_stim_file(
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
-    c.write_to_sim(
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/writeToSim.txt");
-    runProgram(c);*/
-    
-//Circuit 3
-    /*circuit c1;
-    c1.read_lib_file(
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 3/test_circuit_3 - Copy.txt");
-    c1.read_stim_file(
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
-    c1.write_to_sim(
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 3/testcircuit3.sim");
-    runProgram(c1);*/
 
-//Circuit 4
-/*    circuit c2;
-    c2.read_lib_file(
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 4/test_circuit_4 - Copy.txt");
-    c2.read_stim_file(
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
-    c2.write_to_sim(
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 4/testcircuit4.sim");
-    runProgram(c2);*/
+    do
+    {
+        x = 0;
+        cout<<"Choose the circuit you would like to test: "<<endl;
+        cout<<"1: Circuit 1"<<endl<<"2: Circuit 2"<<endl<<"3: Circuit 3"<<endl<<"4: Circuit 4"<<endl<<"5: Circuit 5"<<endl<<"6: Circuit 6"<<endl;
+        cin>>x;
+        if(x == 1)
+        {
+            //Circuit 1
+            circuit c4;
+            c4.read_lib_file(
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 1/test_circuit_1 - Copy.txt");
+            c4.read_stim_file(
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
+            c4.write_to_sim(
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 1/circuit_1_sim.sim");
+            runProgram(c4);
+        }
+        else if(x ==2)
+        {
+            //Circuit 2
+            circuit c5;
+            c5.read_lib_file(
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 2/test_circuit_2 - Copy.txt");
+            c5.read_stim_file(
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
+            c5.write_to_sim(
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 2/circuit_2_sim.sim");
+            runProgram(c5);
+        }
+        else if(x == 3)
+        {
+            //Circuit 3
+            circuit c1;
+            c1.read_lib_file(
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 3/test_circuit_3 - Copy.txt");
+            c1.read_stim_file(
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
+            c1.write_to_sim(
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 3/testcircuit3.sim");
+            runProgram(c1);
+        } else if(x==4)
+        {
+            //Circuit 4
+            circuit c2;
+            c2.read_lib_file(
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 4/test_circuit_4 - Copy.txt");
+            c2.read_stim_file(
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
+            c2.write_to_sim(
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 4/testcircuit4.sim");
+            runProgram(c2);
+        }else if(x == 5)
+        {
+            //Circuit 5
+            circuit c;
+            c.read_lib_file(
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5 - Copy.txt");
+            c.read_stim_file(
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
+            c.write_to_sim(
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/writeToSim.txt");
+            runProgram(c);
+        }
+        else if(x==6)
+        {
+            circuit c3;
+            c3.read_lib_file(
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 6/test_circuit_6 - Copy.txt");
+            c3.read_stim_file(
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
+            c3.write_to_sim(
+                    "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 6/circuit 6.sim");
+            runProgram(c3);
+        }
+
+        cout<<"Test another?(y/n) "<<endl;
+        cin>>y;
 
 
-//Circuit 6
- /*   circuit c3;
-    c3.read_lib_file(
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 6/test_circuit_6 - Copy.txt");
-    c3.read_stim_file(
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
-    c3.write_to_sim(
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 6/circuit 6.sim");
-    runProgram(c3);*/
+    }while (y == 'y');
 
- //Circuit 1
-   /* circuit c4;
-    c4.read_lib_file(
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 1/test_circuit_1 - Copy.txt");
-    c4.read_stim_file(
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
-    c4.write_to_sim(
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 1/circuit_1_sim.sim");
-    runProgram(c4);*/
- //Circuit 2
-    circuit c5;
-    c5.read_lib_file(
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 2/test_circuit_2 - Copy.txt");
-    c5.read_stim_file(
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
-    c5.write_to_sim(
-            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 2/circuit_2_sim.sim");
-    runProgram(c5);
+
+
+
+
+
+
+
+
+
+
 
 
 }
