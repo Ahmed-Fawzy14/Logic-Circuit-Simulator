@@ -85,6 +85,12 @@ build CMakeFiles/Logic_Circuit_Simulator.dir/testing.cpp.obj: CXX_COMPILER__Logi
   OBJECT_DIR = CMakeFiles\Logic_Circuit_Simulator.dir
   OBJECT_FILE_DIR = CMakeFiles\Logic_Circuit_Simulator.dir
 
+build CMakeFiles/Logic_Circuit_Simulator.dir/test.cpp.obj: CXX_COMPILER__Logic_Circuit_Simulator_unscanned_Debug C$:/Users/Fawzy/Spring$ 2024/Digital$ Design$ I/Project$ 1/Logic-Circuit-Simulator/test.cpp || cmake_object_order_depends_target_Logic_Circuit_Simulator
+  DEP_FILE = CMakeFiles\Logic_Circuit_Simulator.dir\test.cpp.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\Logic_Circuit_Simulator.dir
+  OBJECT_FILE_DIR = CMakeFiles\Logic_Circuit_Simulator.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target Logic_Circuit_Simulator
@@ -93,7 +99,7 @@ build CMakeFiles/Logic_Circuit_Simulator.dir/testing.cpp.obj: CXX_COMPILER__Logi
 #############################################
 # Link the executable Logic_Circuit_Simulator.exe
 
-build Logic_Circuit_Simulator.exe: CXX_EXECUTABLE_LINKER__Logic_Circuit_Simulator_Debug CMakeFiles/Logic_Circuit_Simulator.dir/main.cpp.obj CMakeFiles/Logic_Circuit_Simulator.dir/Logic_Gate.cpp.obj CMakeFiles/Logic_Circuit_Simulator.dir/circuit.cpp.obj CMakeFiles/Logic_Circuit_Simulator.dir/testOperator.cpp.obj CMakeFiles/Logic_Circuit_Simulator.dir/program.cpp.obj CMakeFiles/Logic_Circuit_Simulator.dir/testing.cpp.obj
+build Logic_Circuit_Simulator.exe: CXX_EXECUTABLE_LINKER__Logic_Circuit_Simulator_Debug CMakeFiles/Logic_Circuit_Simulator.dir/main.cpp.obj CMakeFiles/Logic_Circuit_Simulator.dir/Logic_Gate.cpp.obj CMakeFiles/Logic_Circuit_Simulator.dir/circuit.cpp.obj CMakeFiles/Logic_Circuit_Simulator.dir/testOperator.cpp.obj CMakeFiles/Logic_Circuit_Simulator.dir/program.cpp.obj CMakeFiles/Logic_Circuit_Simulator.dir/testing.cpp.obj CMakeFiles/Logic_Circuit_Simulator.dir/test.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\Logic_Circuit_Simulator.dir

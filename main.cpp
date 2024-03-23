@@ -1,55 +1,153 @@
-#include "program.cpp"
+//#include "program.cpp"
+#include "testOperator.h"
+//#include <gtest/gtest.h>
+#include <algorithm>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <map>
+#include "circuit.h"
+
 using namespace std;
 
-
-int main()
+void runProgram(circuit  c)
 {
+    c.sort_Cir_inputs();
+    unordered_map<string, tuple <string, bool, int>> current_Outputs_Map;
+    int test = 0;
+    int prevInpIndex = 0;
+    int current_time = 0;
+    tuple<string, bool, int> backOfCirInputs;
 
-    //Reading all the gates from the .lib file
-    vector <Logic_Gate> all_gates = read_lib_file();
+    for (int i = 0; i < c.getcirInputs().size(); i++)
+    {
 
-//Reading the .cir file
-    ifstream inputfile;
-    inputfile.open(".cir_file"); // opening the file
-    readfile(inputfile);
+        c.sort_Cir_inputs();
+        int lastTime = 0;
+        backOfCirInputs = c.getcirInputs().back();
+        lastTime = get<2>(backOfCirInputs);
 
-    // 2d vector delaration
-    //Combining data from .cir and .lib only to the gates used
-    vector<vector<string>> components;
-    fillvector(components, inputfile);
+        while ((get<2>(c.getcirInputs()[i]) != current_time))
+        {
+            current_time++;
+        }
 
-    objectmodification(components);
+        if (get<2>(c.getcirInputs()[i]) ==
+            current_time)
+        {
+
+            current_time++;
+            for (int j = i; j < c.getcirInputs().size();
+                 j++)
+            {
+
+                i = j;
+
+                auto &input = (c.getcirInputsREF())[j];
+                string inputName = get<0>(input);
+
+                (c.getcurrent_Inputs_MapREF())[inputName] = input;
+
+                // call operator
+                run_Operator_Test(c, current_time, current_Outputs_Map, prevInpIndex);
+
+                c.sort_Cir_inputs();
 
 
-    //Testing each ciruit 
-    circuit c1;
-    c1.read_lib_file();
-    c1.readfile();
-    c1.run();
-    circuit c2;
-    c2.read_lib_file();
-    c2.readfile();
-    c2.run();
-    circuit c3;
-    c3.read_lib_file();
-    c3.readfile();
-    c3.run();
-    circuit c4;
-    c4.read_lib_file();
-    c4.readfile();
-    c4.run();
-    circuit c5;
-    c5.read_lib_file();
-    c5.readfile();
-    c5.run();
-    circuit c6;
-    c6.read_lib_file();
-    c6.readfile();
-    c6.run();
+                if (get<2>(c.getcirInputs()[j]) !=
+                    get<2>(c.getcirInputs()[j + 1]))
+                { // checks if any other inputs have same value of time
+                    break;
+                }
+            }
+        }
 
-    
-    return 0;
+        test++;
+    }
+
+    for(auto x : c.getcirInputs())
+    {
+        cout<<get<0>(x)<<'\t'<<get<1>(x)<<'\t'<<get<2>(x)<<endl;
+    }
+
+
 }
 
 
-        
+
+
+int main(int argc, char **argv) {
+
+    int x = 0;
+
+
+//Circuit 5
+    /*circuit c;
+    c.read_lib_file(
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5 - Copy.txt");
+    c.read_stim_file(
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
+    c.write_to_sim(
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/writeToSim.txt");
+    runProgram(c);*/
+    
+//Circuit 3
+    /*circuit c1;
+    c1.read_lib_file(
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 3/test_circuit_3 - Copy.txt");
+    c1.read_stim_file(
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
+    c1.write_to_sim(
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 3/testcircuit3.sim");
+    runProgram(c1);*/
+
+//Circuit 4
+/*    circuit c2;
+    c2.read_lib_file(
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 4/test_circuit_4 - Copy.txt");
+    c2.read_stim_file(
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
+    c2.write_to_sim(
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 4/testcircuit4.sim");
+    runProgram(c2);*/
+
+
+//Circuit 6
+ /*   circuit c3;
+    c3.read_lib_file(
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 6/test_circuit_6 - Copy.txt");
+    c3.read_stim_file(
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
+    c3.write_to_sim(
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 6/circuit 6.sim");
+    runProgram(c3);*/
+
+ //Circuit 1
+   /* circuit c4;
+    c4.read_lib_file(
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 1/test_circuit_1 - Copy.txt");
+    c4.read_stim_file(
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
+    c4.write_to_sim(
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 1/circuit_1_sim.sim");
+    runProgram(c4);*/
+ //Circuit 2
+    circuit c5;
+    c5.read_lib_file(
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 2/test_circuit_2 - Copy.txt");
+    c5.read_stim_file(
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
+    c5.write_to_sim(
+            "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 2/circuit_2_sim.sim");
+    runProgram(c5);
+
+
+}

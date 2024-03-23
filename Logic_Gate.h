@@ -8,6 +8,8 @@ using namespace std;
 #include <string>
 #include <vector>
 #include <tuple>
+#include <map>
+#include<unordered_set>
 
 
 class Logic_Gate {
@@ -17,6 +19,7 @@ private:
 
     //Name as string from .lib file
     string name;
+
 
     //Number of inputs as from .lib file
     int num_Of_Inputs = 0;
@@ -29,10 +32,9 @@ private:
     string expression;
 
     //The logic gate that will be used will have the following data elements used
-
-
+    map<int, string> previousInputs;
 //string is the name from the .cir file and int is initalized to -1 until .stim applies a value then we only run this again if it changes
- //Inputs ust be entered in the same order of inputs as that of the 2D vector theat you read the .cir file with
+    //Inputs ust be entered in the same order of inputs as that of the 2D vector theat you read the .cir file with
     vector<pair<string,int>> cir_Input_Names;
 
     //Name as in .cir file
@@ -47,6 +49,7 @@ private:
     string cirType;
 
 public:
+
 
     Logic_Gate()
     {
@@ -67,11 +70,20 @@ public:
 
     //Funcitons
 
-   // void sort_Cir_inputs(circuit c);
+    // void sort_Cir_inputs(circuit c);
+
+    std::unordered_set<std::size_t> previousInputHashes;
 
 
+    map<int, string> & getPreviousInputsREF ()
+    {
+        return previousInputs;
+    }
 
-
+    void setPreviousInputs(map<int, string>  m)
+    {
+        this->previousInputs = m;
+    }
     // Setters
     void setName(const string& name) {
         this->name = name;
@@ -90,11 +102,18 @@ public:
     }
 
 //    void setCirInputs(const vector<tuple<char, bool, int>>& cirInputs) {
-  //      this->cirInputs = cirInputs;
-  //  }
+    //      this->cirInputs = cirInputs;
+    //  }
 
     void setCirCompName(const string& cirCompName) {
         this->cirCompName = cirCompName;
+    }
+
+
+    void setCirInputName(string s, int x)
+    {
+        auto p = make_pair(s,x);
+        cir_Input_Names.push_back(p);
     }
 
     void setCirOutput(bool cirOutput) {

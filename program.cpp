@@ -1,4 +1,4 @@
-#include <fstream> // Including the fstream library to read files
+/*#include <fstream> // Including the fstream library to read files
 #include <iostream> // Including the iostream library in case of couting any output for debugging or clarity purposes
 #include <string> // Including the string library to use string functions
 #include <sstream> // Including the sstream library to store data from files into variables using delimiters
@@ -157,6 +157,6 @@ void run()
     tuple <char, bool, int> Final_output = VE.back(); // Storing the last output in variable
     write_to_sim(C); // Writing the output of the simulation into a file (sim file)
     
-}
+}*/
 
 
