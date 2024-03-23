@@ -13,9 +13,7 @@
 
 int run_Operator_Test(circuit &c, int current_Time, unordered_map<string, tuple <string, bool, int>> &current_Outputs_Map, int &prevInpIndex);
 void input_exisits(circuit &c,  unordered_map<string, pair<bool,bool>> &flag, int &index);
-int evaluate_Expression(circuit &c, int usedGates_Index);
 int find_usedGates_Index(circuit &sample_c, string comp_Name);
 int get_TimeStamp(circuit &sample_c, int current_Time, int usedGates_Index );
 void insertValuesInExpression(string &tokens, vector<pair<string,int>> &cir_Input_Names, int &checkNumOfInputs);
-bool checkVector(vector <tuple<string, bool, int>> cirInputs, tuple<string, bool, int> tup);
 #endif //LOGIC_CIRCUIT_SIMULATOR_TESTOPERATOR_H
