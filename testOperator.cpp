@@ -78,7 +78,6 @@ void insertValuesInExpression(string &tokens, vector<pair<string,int>> &sample_c
 
 
 }
-
 int evaluate(circuit &c, int usedGates_Index){
 
 
@@ -205,7 +204,6 @@ int evaluate(circuit &c, int usedGates_Index){
 
 void input_exists_hashed(circuit &c, unordered_map<string, pair<bool, bool>> &flag, int &index) {
     for (auto &gate : c.getREF_usedGates()) {
-        cout << "Processing gate: " << gate.getCirCompName() << endl;
         bool allInputsPresent = true;
         std::string inputSequence;
 
@@ -215,16 +213,13 @@ void input_exists_hashed(circuit &c, unordered_map<string, pair<bool, bool>> &fl
             if (search != c.getcurrent_Inputs_MapREF().end()) {
                 input.second = std::get<1>(search->second); // Update input value
                 inputSequence += std::to_string(input.second) + ",";
-                cout << "Input " << input.first << " found with value " << input.second << endl;
             } else {
                 allInputsPresent = false; // Not all inputs are present
-                cout << "Input " << input.first << " not found" << endl;
                 break;
             }
         }
 
         if (allInputsPresent) {
-            cout << "All inputs present for " << gate.getCirCompName() << endl;
             // Compute hash of the input sequence
             std::hash<std::string> hasher;
             std::size_t sequenceHash = hasher(inputSequence);
@@ -234,21 +229,17 @@ void input_exists_hashed(circuit &c, unordered_map<string, pair<bool, bool>> &fl
                 // It's a new sequence, so process accordingly and add hash to set
                 gate.previousInputHashes.insert(sequenceHash);
                 flag[gate.getCirCompName()] = std::make_pair(true, true); // Ready for processing
-                cout << "New input sequence for " << gate.getCirCompName() << "; processing." << endl;
             } else {
                 // Sequence has been seen before, not ready for processing
                 flag[gate.getCirCompName()] = std::make_pair(true, false);
-                cout << "Input sequence for " << gate.getCirCompName() << " has been seen before; skipping." << endl;
             }
         } else {
             // If not all inputs are present, indicate that the gate is not ready for processing
             flag[gate.getCirCompName()] = std::make_pair(false, false);
-            cout << "Not all inputs present for " << gate.getCirCompName() << "; not ready for processing." << endl;
         }
     }
 
     index++; // Increment index for tracking purposes
-    cout << "Incrementing index to: " << index << endl;
 }
 
 int find_usedGates_Index(circuit &c,string comp_Name)
@@ -286,17 +277,7 @@ int get_TimeStamp(circuit &sample_c, int current_Time, int usedGates_Index )
 
 }
 
-bool checkVector(vector <tuple<string, bool, int>> cirInputs, tuple<string, bool, int> tup)
-{
-    for(auto x: cirInputs)
-    {
-        if(x == tup)
-            return 0;
 
-    }
-
-    return 1;
-};
 
 int run_Operator_Test(circuit &c, int current_Time, unordered_map<string, tuple <string, bool, int>> &current_Outputs_Map, int &prevInpIndex)
 {
@@ -340,20 +321,18 @@ int run_Operator_Test(circuit &c, int current_Time, unordered_map<string, tuple 
 
             if(output == -1)
             {
-                cout<<"Invalid inputs number for component!!!!: "<<(c.getusedGates())[usedGates_Index].getCirOutputName()<<endl;
                 return -1;
             }
             else if(output == 0 || output ==  1)
             {
                 new_Time = get_TimeStamp(c, current_Time, usedGates_Index);
                 (c.getcirInputsREF()).push_back(make_tuple(current_comp_name, output, new_Time));
-                cout<<"pushing into cirinputs: "<<current_comp_name<<'\t'<<output<<'\t'<<new_Time<<endl;
             }
 
         }
         else
         {
-            cout<<"Component "<<element.first<< " not ready"<<endl;
+            //Component is not ready
         }
     }
 
