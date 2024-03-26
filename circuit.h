@@ -27,6 +27,8 @@ private:
     int time_End;
 
     vector <tuple<string, bool, int>> cirInputs;
+
+    //**
     map <string, tuple <string, bool, int>> current_Inputs_Map;
     map <string, Logic_Gate>  All_gates;
 

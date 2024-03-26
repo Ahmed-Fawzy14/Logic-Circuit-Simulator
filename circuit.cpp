@@ -173,6 +173,7 @@ void circuit :: objectmodification(vector<vector<string>> &components)
             g1 = l->second;
             for (int j = 3; j < components[i].size(); j++)
                 {
+                
                    g1.setCirInputName(components[i][j], -1); // adding the inputs to the object from the vector
                 }
             g1.setCirCompName(components[i][0]);

@@ -94,7 +94,7 @@ int evaluate(circuit &c, int usedGates_Index){
 
     if(checkNumOfInputs != (c.getusedGates())[usedGates_Index].getNumOfInputs())
     {
-        cout<<"Invalid inputs number for component: "<<(c.getusedGates())[usedGates_Index].getCirOutputName()<<endl;
+       // cout<<"Invalid inputs number for component: "<<(c.getusedGates())[usedGates_Index].getCirOutputName()<<endl;
         return -1;
     }
 
@@ -231,7 +231,11 @@ void input_exists_hashed(circuit &c, unordered_map<string, pair<bool, bool>> &fl
                 flag[gate.getCirCompName()] = std::make_pair(true, true); // Ready for processing
             } else {
                 // Sequence has been seen before, not ready for processing
+<<<<<<< Updated upstream
                 flag[gate.getCirCompName()] = std::make_pair(true, false);
+=======
+              //  flag[gate.getCirCompName()] = std::make_pair(true, false);
+>>>>>>> Stashed changes
             }
         } else {
             // If not all inputs are present, indicate that the gate is not ready for processing
@@ -307,7 +311,6 @@ int run_Operator_Test(circuit &c, int current_Time, unordered_map<string, tuple 
 
         if(current_Gate.getNumOfInputs() != (current_cirInputNames).size())
         {
-            cout<<"Invalid inputs number for component: "<<current_Gate.getCirCompName()<<endl;
         }
 
 
@@ -317,10 +320,14 @@ int run_Operator_Test(circuit &c, int current_Time, unordered_map<string, tuple 
 
 
             output = evaluate(c, usedGates_Index);
-            cout<<output<<endl;
 
             if(output == -1)
+<<<<<<< Updated upstream
             {
+=======
+            {           cout<<"Invalid inputs number for component: "<<current_Gate.getCirCompName()<<endl;
+
+>>>>>>> Stashed changes
                 return -1;
             }
             else if(output == 0 || output ==  1)
