@@ -20,15 +20,15 @@ private:
     // Use the Queue for popping method
     //  queue<Logic_Gate> usedGates;
 
-    // This is the worst case propogation delay in ps
+    // This is the worst case propagation delay in ps
     int propgration_Delay_ps;
 
     // This is the final time in the .stim file
     int time_End;
 
-    vector<tuple<string, bool, int>> cirInputs;
-    map<string, tuple<string, bool, int>> current_Inputs_Map;
-    map<string, Logic_Gate> All_gates;
+    vector <tuple<string, bool, int>> cirInputs;
+    map <string, tuple <string, bool, int>> current_Inputs_Map;
+    map <string, Logic_Gate>  All_gates;
 
 public:
     void printLogicGateContents();
@@ -39,9 +39,6 @@ public:
     }
 
     void Run();
-
-    // Send the index of the object in usedGates to this function and the current cir_Input_Names
-    // bool Operator(int index, vector<tuple <string, bool, int>> current_Inputs);
 
     void set_All_gates(map<string, Logic_Gate> Library_gates)
     {
@@ -87,6 +84,7 @@ public:
     {
         cirInputs = inputs;
     }
+
     void objectmodification(vector<vector<string>> &components);
     void fillvector(vector<vector<string>> &components, string fileName);
 
@@ -109,9 +107,6 @@ public:
     void write_to_sim(string fileName);
     void read_stim_file(const string &filepath);
 
-    //  void objectmodification(vector<vector<string>> &components);
-    // void read_circ_file(ifstream &inputfile);
-    // void fillvector(vector<vector<string>> &components,  ifstream &inputfile);
     void sort_Cir_inputs();
 };
 

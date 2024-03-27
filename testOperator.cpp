@@ -37,47 +37,75 @@ int applyUnaryOp(int a, char op){
     return 0;
 }
 
-void insertValuesInExpression(string &tokens, vector<pair<string,int>> &sample_cir_Input_Names, int &checkNumOfInputs) {
-    int expression_Index = 0;
-    string currentInputName;
+//start of inserting values into expression
+// this function returns the prefix of the operand in the expression in case it is not "i"
+string getoperand(const string &expression)
+{
+    for (int i = 0; i < expression.size(); i++)
+    { // loops through all expressions looking for operands
+        if (isdigit(expression[i]))
+        { // digit found
+            int prefixend = i;
+            if (prefixend == 0)
+                continue; // makes sure code doesnt leave string
+            int prefixstart = i - 1;
+            while (prefixstart > 0 && isalpha(expression[prefixstart - 1]))
+            {
 
-    for (int j = 0; j < tokens.length(); ++j) {
-        char currentChar = tokens[j];
-        bool isOperator = currentChar == '&' || currentChar == '|' || currentChar == '~';
-        bool isParenthesis = currentChar == '(' || currentChar == ')'; // Check for parentheses
-
-        if (isOperator || currentChar == ' ' || isParenthesis) { // Treat parentheses as special cases
-            if (!currentInputName.empty()) {
-                // Replace the currentInputName with its corresponding value
-                int value = (currentInputName == "1") ? 1 : (currentInputName == "0") ? 0 : sample_cir_Input_Names[expression_Index].second;
-                tokens.replace(j - currentInputName.length(), currentInputName.length(), std::to_string(value));
-                j -= currentInputName.length() - 1; // Adjust 'j' based on the length difference
-
-                checkNumOfInputs++;
-                expression_Index++;
-                currentInputName.clear(); // Reset for the next input name
+                prefixstart--;
             }
-            if (isParenthesis) {
-                // Do not clear currentInputName if the current character is a parenthesis
-                continue; // Move to the next character without altering the loop variable or currentInputName
-            }
-        } else {
-            // Accumulate non-operator characters into the current input name
-            currentInputName += currentChar;
+            return expression.substr(prefixstart, prefixend);
         }
     }
+    return " ";
+}
 
-    // Handle the last accumulated input name if not empty
-    if (!currentInputName.empty()) {
-        int value = (currentInputName == "1") ? 1 : (currentInputName == "0") ? 0 : sample_cir_Input_Names[expression_Index].second;
-        tokens.replace(tokens.length() - currentInputName.length(), currentInputName.length(), std::to_string(value));
+string insertValuesInExpression(Logic_Gate gate1)
+{
+    // 1 & 0
+    // A(1), B(0)
 
-        checkNumOfInputs++;
-        expression_Index++;
+    // i1 & i2
+    // A, B, C
+
+    // substitue in the expression each operand with the value of the input
+
+    // check that cirinputnames(in cir file)== gate.noinputs(lib)
+
+    string expression = gate1.getExpression(); // extract expression
+    string prefix = getoperand(expression);
+    cout << prefix;
+    if (prefix.empty())
+    {
+        cout << "No operand prefix detected." << endl;
+        return expression; // return the original expression if no prefix is detected
     }
 
+    vector<pair<string, int>> inputs = gate1.get_cir_Input_Names(); // extract cirinputnames
+    // vector<pair<string, int>> inputs = sample_cir_Input_Names;
 
+    int expectedinputs = gate1.getNumOfInputs();
+    if (inputs.size() != expectedinputs) // makes sure the number of inputs and the size of vector are equal
+    {
+        cout << "number of inputs is not same as expected " << endl;
+        return "";
+    }
+    else
+    {
+        for (int i = 0; i < inputs.size(); ++i)
+        {
+            string operandexpression = prefix + to_string(i + 1); // make a variable with the operand in the expression
+            size_t position = expression.find(operandexpression); // find first instance of the operand in expression
+            while (position != string::npos)
+            {
+                expression.replace(position, operandexpression.length(), to_string(inputs[i].second)); // replaces instance of operandexpression with value of input in cirinputs
+                position = expression.find(operandexpression, position + 1);
+            }
+        }
+        return expression;
+    }
 }
+
 int evaluate(circuit &c, int usedGates_Index){
 
 
@@ -94,7 +122,7 @@ int evaluate(circuit &c, int usedGates_Index){
 
     if(checkNumOfInputs != (c.getusedGates())[usedGates_Index].getNumOfInputs())
     {
-        cout<<"Invalid inputs number for component: "<<(c.getusedGates())[usedGates_Index].getCirOutputName()<<endl;
+       // cout<<"Invalid inputs number for component: "<<(c.getusedGates())[usedGates_Index].getCirOutputName()<<endl;
         return -1;
     }
 
@@ -231,7 +259,11 @@ void input_exists_hashed(circuit &c, unordered_map<string, pair<bool, bool>> &fl
                 flag[gate.getCirCompName()] = std::make_pair(true, true); // Ready for processing
             } else {
                 // Sequence has been seen before, not ready for processing
+<<<<<<< Updated upstream
                 flag[gate.getCirCompName()] = std::make_pair(true, false);
+=======
+              //  flag[gate.getCirCompName()] = std::make_pair(true, false);
+>>>>>>> Stashed changes
             }
         } else {
             // If not all inputs are present, indicate that the gate is not ready for processing
@@ -307,7 +339,6 @@ int run_Operator_Test(circuit &c, int current_Time, unordered_map<string, tuple 
 
         if(current_Gate.getNumOfInputs() != (current_cirInputNames).size())
         {
-            cout<<"Invalid inputs number for component: "<<current_Gate.getCirCompName()<<endl;
         }
 
 
@@ -317,10 +348,14 @@ int run_Operator_Test(circuit &c, int current_Time, unordered_map<string, tuple 
 
 
             output = evaluate(c, usedGates_Index);
-            cout<<output<<endl;
 
             if(output == -1)
+<<<<<<< Updated upstream
             {
+=======
+            {           cout<<"Invalid inputs number for component: "<<current_Gate.getCirCompName()<<endl;
+
+>>>>>>> Stashed changes
                 return -1;
             }
             else if(output == 0 || output ==  1)
