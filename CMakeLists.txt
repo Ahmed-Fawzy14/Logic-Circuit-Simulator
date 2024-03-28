@@ -10,6 +10,5 @@ add_executable(Logic_Circuit_Simulator main.cpp
         circuit.cpp
         testOperator.cpp
         testOperator.h
-        program.cpp
         testing.cpp
         test.cpp)

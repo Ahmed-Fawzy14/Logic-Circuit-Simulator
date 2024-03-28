@@ -7,5 +7,4 @@
 
 #include <algorithm>
 using namespace std;
-//    vector<tuple<char, bool, int>> cirInputs;
 
