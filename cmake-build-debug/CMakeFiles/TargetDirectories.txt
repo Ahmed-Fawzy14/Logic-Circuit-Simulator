@@ -1,3 +1,0 @@
-C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/cmake-build-debug/CMakeFiles/Logic_Circuit_Simulator.dir
-C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/cmake-build-debug/CMakeFiles/rebuild_cache.dir

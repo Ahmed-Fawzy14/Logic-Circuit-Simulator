@@ -37,6 +37,7 @@ int applyUnaryOp(int a, char op){
     return 0;
 }
 
+<<<<<<< Updated upstream
 //start of inserting values into expression
 // this function returns the prefix of the operand in the expression in case it is not "i"
 string getoperand(const string &expression)
@@ -80,6 +81,20 @@ string insertValuesInExpression(Logic_Gate gate1)
         cout << "No operand prefix detected." << endl;
         return expression; // return the original expression if no prefix is detected
     }
+=======
+void insertValuesInExpression(string &exp, vector<pair<string,int>> &sample_cir_Input_Names) {
+
+    //1 & 0
+    //A(1), B(0)
+
+    //check that cirinput names== gate.noinputs
+
+
+    //i1 & i2
+    //A, B, C
+
+
+>>>>>>> Stashed changes
 
     vector<pair<string, int>> inputs = gate1.get_cir_Input_Names(); // extract cirinputnames
     // vector<pair<string, int>> inputs = sample_cir_Input_Names;
