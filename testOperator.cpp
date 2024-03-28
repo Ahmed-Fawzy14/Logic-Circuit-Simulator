@@ -37,6 +37,36 @@ int applyUnaryOp(int a, char op){
     return 0;
 }
 
+
+
+string replaceOperands(const Logic_Gate &gate, bool &samevalue)
+{
+    string updatedExpression = gate.getExpression();
+    auto inputs = gate.get_cir_Input_Names();
+    int expectedinputs = gate.getNumOfInputs();
+
+    if (inputs.size() != expectedinputs) // makes sure the number of inputs and the size of vector are equal
+    {
+        cout << "number of inputs is not same as expected " << endl;
+        samevalue = false;
+        return "";
+    }
+    else
+    {
+        for (int i = 0; i < inputs.size(); ++i)
+        {
+            // Construct the operand placeholder based on input order (e.g., "i1", "i2", etc.)
+            string operand = "i" + to_string(i + 1);
+            string value = to_string(inputs[i].second);
+
+            regex pattern(operand + "(\\D|$)");
+
+            updatedExpression = regex_replace(updatedExpression, pattern, value + "$1");
+        }
+        return updatedExpression;
+    }
+}
+
 //start of inserting values into expression
 // this function returns the prefix of the operand in the expression in case it is not "i"
 string getoperand(const string &expression)
