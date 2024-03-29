@@ -1,21 +1,39 @@
-//
-// Created by Fawzy on 3/16/2024.
-//
+// testOperator.h
+#ifndef TESTOPERATOR_H
+#define TESTOPERATOR_H
 
-#ifndef LOGIC_CIRCUIT_SIMULATOR_TESTOPERATOR_H
-#define LOGIC_CIRCUIT_SIMULATOR_TESTOPERATOR_H
-#include <fstream> // Including the fstream library to read files
-#include <iostream> // Including the iostream library in case of couting any output for debugging or clarity purposes
-#include <string> // Including the string library to use string functions
-#include <sstream> // Including the sstream library to store data from files into variables using delimiters
-#include <unordered_map> // Including the unordered_map class to be used in the storing of gates
+#include <string>
+#include <stack>
+#include <vector>
+#include <memory>
+#include "Logic_Gate.h" // Assuming this is the header for Logic_Gate class
 #include "circuit.h"
 
-int run_Operator_Test(circuit &c, int current_Time, unordered_map<string, tuple <string, bool, int>> &current_Outputs_Map, int &prevInpIndex);
-void input_exisits(circuit &c,  unordered_map<string, pair<bool,bool>> &flag, int &index);
-int find_usedGates_Index(circuit &sample_c, string comp_Name);
-int get_TimeStamp(shared_ptr<Logic_Gate> gate, int current_Time);
-void insertValuesInExpression(string &tokens, vector<pair<string,int>> &cir_Input_Names, int &checkNumOfInputs);
-bool evaluate(shared_ptr<Logic_Gate> g, int time);
+// Function to determine the precedence of boolean algebra operators
+int precedence(char op);
 
-#endif //LOGIC_CIRCUIT_SIMULATOR_TESTOPERATOR_H
+// Function to apply binary operation on two operands
+int applyOp(int a, int b, char op);
+
+// Function to apply unary operation on a single operand
+int applyUnaryOp(int a, char op);
+
+// Function to replace operands in the gate's expression with their respective values
+std::string replaceOperands(std::shared_ptr<Logic_Gate> gate, bool &samevalue);
+
+// Function to perform the shunting yard algorithm on the tokenized expression
+void shuntingYard(std::string &tokens, int &i, std::stack<int> &values, std::stack<char> &operators);
+
+// Function to finalize the evaluation of the expression after applying the shunting yard algorithm
+void FinishShuntingYard(std::stack<int> &numbers, std::stack<char> &operators);
+
+// Function to evaluate the logical expression of a gate at a given time
+bool evaluate(std::shared_ptr<Logic_Gate> g, int time);
+
+// Function to find the index of a gate in the circuit's used gates based on its name
+int find_usedGates_Index(circuit &c, std::string comp_Name);
+
+// Function to calculate the new timestamp for outputs based on the current time and gate delay
+int get_TimeStamp(std::shared_ptr<Logic_Gate> gate, int current_Time);
+
+#endif //TESTOPERATOR_H
