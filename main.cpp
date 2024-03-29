@@ -246,7 +246,7 @@ void printConsolidatedBB(const boss& BB) {
 }
 
 
-void runAlgorithm(circuit &c, boss &BB)
+void runAlgorithm(circuit &c, boss &BB, int maxTime)
 {
 
     boss copyBB;
@@ -258,15 +258,25 @@ void runAlgorithm(circuit &c, boss &BB)
     copyBB = BB;
     for(auto &row : BB)
     {
+
         int time = row.first;
-        fillActivityList(c, BB,time, counter, copyBB);
-//            printBoss(BB); // Print after adding outputs to scheduled events
+        if(time <= maxTime)
+        {
+            fillActivityList(c, BB,time, counter, copyBB);
 
-        update_cirInputs_names(c,copyBB, BB,time, counter);
-        //  printBoss(BB); // Print after adding outputs to scheduled events
+            update_cirInputs_names(c,copyBB, BB,time, counter);
 
-        addOutputsToScheduledEvents(BB, time);
-        copyBB = BB;
+            addOutputsToScheduledEvents(BB, time);
+            copyBB = BB;
+        }
+        else
+        {
+
+            cout<<"Maximum time for simulation reached."<<endl;
+            printConsolidatedBB(BB);
+            exit(0);
+        }
+
 
 
     }
@@ -276,9 +286,6 @@ void runAlgorithm(circuit &c, boss &BB)
     printConsolidatedBB(BB);
 }
 
-//Add gates that are activated by events into activity list
-//Map the inputs to the present elements of the gates in activity list
-//
 
 
 int main()
@@ -286,15 +293,15 @@ int main()
     boss BB;
     vector<vector<string>> components;
     int x = 0;
-   // int maxTime = 0;
+    int maxTime = 0;
 
     cout<<"Choose which test circuit you want to run: "<<endl;
     cout<<"1: BB Test 1"<<endl<<"2: BB Test 2"<<endl<<"3: BB Test 3"<<endl<<"4: BB Test 4"<<
     endl<<"5: Test Circuit 1"<<endl<<"6: Test Circuit 2"<<endl<<"7: Test Circuit 3"<<endl<<
     "8: Test Circuit 4"<<endl<<"9: Test Circuit 5"<<endl<<"10: Test Circuit 6"<<endl;
     cin>>x;
-    //cout<<"What is the maximum time of the simulation: "<<endl;
-    //cin>>maxTime;
+    cout<<"What is the maximum time of the simulation: "<<endl;
+    cin>>maxTime;
 
     if(x==1)
     {
@@ -310,7 +317,7 @@ int main()
         //c4.write_to_sim(
         fill_scheduled_events(c4, BB);
 
-        runAlgorithm(c4, BB);
+        runAlgorithm(c4, BB, maxTime);
     }
     else if(x==2)
     {
@@ -326,7 +333,7 @@ int main()
         //c4.write_to_sim(
         fill_scheduled_events(c4, BB);
 
-        runAlgorithm(c4, BB);
+        runAlgorithm(c4, BB, maxTime);
     }
     else if(x==3)
     {
@@ -342,7 +349,7 @@ int main()
         //c4.write_to_sim(
         fill_scheduled_events(c4, BB);
 
-        runAlgorithm(c4, BB);
+        runAlgorithm(c4, BB, maxTime);
     }
     else if(x==4)
     {
@@ -357,7 +364,7 @@ int main()
         //c4.write_to_sim(
         fill_scheduled_events(c4, BB);
 
-        runAlgorithm(c4, BB);
+        runAlgorithm(c4, BB, maxTime);
 
     }
     else if(x==5)
@@ -373,7 +380,7 @@ int main()
         //c4.write_to_sim(
         fill_scheduled_events(c4, BB);
 
-        runAlgorithm(c4, BB);
+        runAlgorithm(c4, BB, maxTime);
 
     }
 
@@ -390,7 +397,7 @@ int main()
         //c4.write_to_sim(
         fill_scheduled_events(c4, BB);
 
-        runAlgorithm(c4, BB);
+        runAlgorithm(c4, BB, maxTime);
 
     }
     else if(x==7)
@@ -406,7 +413,7 @@ int main()
         //c4.write_to_sim(
         fill_scheduled_events(c4, BB);
 
-        runAlgorithm(c4, BB);
+        runAlgorithm(c4, BB, maxTime);
 
     }
     else if(x==8)
@@ -422,7 +429,7 @@ int main()
         //c4.write_to_sim(
         fill_scheduled_events(c4, BB);
 
-        runAlgorithm(c4, BB);
+        runAlgorithm(c4, BB, maxTime);
 
     }
     else if(x==9)
@@ -438,7 +445,7 @@ int main()
         //c4.write_to_sim(
         fill_scheduled_events(c4, BB);
 
-        runAlgorithm(c4, BB);
+        runAlgorithm(c4, BB, maxTime);
 
     }
     else if(x==10)
@@ -448,13 +455,13 @@ int main()
 
         c4.read_lib_file(
                 "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/LibraryFile.lib",
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_4.cir");
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_6.cir");
         c4.read_stim_file(
                 "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_4.stim");
         //c4.write_to_sim(
         fill_scheduled_events(c4, BB);
 
-        runAlgorithm(c4, BB);
+        runAlgorithm(c4, BB , maxTime);
 
     }
 
