@@ -43,11 +43,11 @@ int applyUnaryOp(int a, char op){
 
 string replaceOperands(shared_ptr<Logic_Gate> gate, bool &samevalue)
 {
-    string updatedExpression = gate->getExpression();
-    auto inputs = gate->get_cir_Input_Names();
-    int expectedinputs = gate->getNumOfInputs();
+    string updatedExpression = gate->getExpression(); // receive the expression of the gate
+    auto inputs = gate->get_cir_Input_Names();        // receive cir_input_names
+    int expectedinputs = gate->getNumOfInputs();      // receive the variable NumofInputs
 
-    if (inputs.size() != expectedinputs) //Error handeling for incomplete inputs in .cir
+    if (inputs.size() != expectedinputs) // Error handling for incomplete inputs in .cir
     {
         cerr << "number of inputs is not same as expected " << endl;
         samevalue = false;
@@ -56,15 +56,15 @@ string replaceOperands(shared_ptr<Logic_Gate> gate, bool &samevalue)
     }
     else
     {
-        for (int i = 0; i < inputs.size(); ++i)
+        for (int i = 0; i < inputs.size(); ++i) // iterates input
         {
-            // Construct the operand placeholder based on input order (e.g., "i1", "i2", etc.)
-            string operand = "i" + to_string(i + 1);
-            string value = to_string(inputs[i].second);
 
-            regex pattern(operand + "(\\D|$)");
+            string operand = "i" + to_string(i + 1);    // construct the operand ("i1", "i2", etc.)
+            string value = to_string(inputs[i].second); // get input value
 
-            updatedExpression = regex_replace(updatedExpression, pattern, value + "$1");
+            regex pattern(operand + "(\\D|$)"); // regex to match placeholder
+
+            updatedExpression = regex_replace(updatedExpression, pattern, value + "$1"); // updates the expression
         }
         return updatedExpression;
     }
