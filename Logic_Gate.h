@@ -10,6 +10,8 @@ using namespace std;
 #include <tuple>
 #include <map>
 #include<unordered_set>
+#include <memory>
+
 
 
 class Logic_Gate {
@@ -31,8 +33,8 @@ private:
     //input, operator, input, operator, input... so the odd index is always an operator
     string expression;
 
-    //The logic gate that will be used will have the following data elements used
-    map<int, string> previousInputs;
+
+
 //string is the name from the .cir file and int is initalized to -1 until .stim applies a value then we only run this again if it changes
     //Inputs ust be entered in the same order of inputs as that of the 2D vector theat you read the .cir file with
     vector<pair<string,int>> cir_Input_Names;
@@ -56,6 +58,7 @@ public:
 
     }
 
+
     Logic_Gate(string name, int num_Of_Inputs, int delay_ps, string expression)
     {
         this->name = name;
@@ -75,15 +78,6 @@ public:
     std::unordered_set<std::size_t> previousInputHashes;
 
 
-    map<int, string> & getPreviousInputsREF ()
-    {
-        return previousInputs;
-    }
-
-    void setPreviousInputs(map<int, string>  m)
-    {
-        this->previousInputs = m;
-    }
     // Setters
     void setName(const string& name) {
         this->name = name;
