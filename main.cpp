@@ -9,38 +9,33 @@
 #include <sstream>
 #include <map>
 #include <queue>
+#include <stack>
 #include "circuit.h"
 
-typedef map<int, pair<vector<tuple<string, bool, int>>, queue<Logic_Gate>>> boss;
-typedef pair<vector<tuple<string, bool, int>>, queue<Logic_Gate>> Pair;
+typedef map<int, pair<vector<tuple<string, bool, int>>, queue<shared_ptr<Logic_Gate>>>> boss;
 
 using namespace std;
+
 
 //Changed int to bool
 
 //Tests if a single gate has this input
-bool input_exists(Logic_Gate &gate, string &Input_name, bool &val, int time)
-{
-    for (auto &element : gate.getREF_cir_Input_Names())
-    {
-        //Here we are identitying which element exsits then changing its value
-        if (element.first == Input_name)
-        {
+bool input_exists(shared_ptr<Logic_Gate> &gate, string &Input_name, bool &val, int time) {
+    for (auto &element : gate->getREF_cir_Input_Names()) {
+        if (element.first == Input_name) {
             element.second = val;
-            cout<<element.first<<" now has value "<<val<<" in "<<gate.getCirCompName()<<" at time "<<time<<endl;
+           // cout << element.first << " now has value " << val << " in " << gate->getCirCompName() << " at time " << time << endl;
             return true;
         }
-
     }
     return false;
 }
-
-bool input_exists_bool(Logic_Gate &gate, string &Input_name)
+bool input_exists_bool(shared_ptr<Logic_Gate> &gate, string &Input_name, bool &val)
 {
-    for (auto &element : gate.getREF_cir_Input_Names())
+    for (auto &element : gate->getREF_cir_Input_Names())
     {
         //Here we are checking if at least one element exists
-        if (element.first == Input_name)
+        if ((element.first == Input_name))
         {
             return true;
         }
@@ -50,35 +45,69 @@ bool input_exists_bool(Logic_Gate &gate, string &Input_name)
 
 
 //Changed get<2> to get<1> since it should pass bool
-void update_cirInputs_names(boss &BB, int &time)
+void update_cirInputs_names(circuit &c,boss &copyBB, boss &BB,int &time, map<string, int> counter)
 {
 
 
-    auto activityList = BB[time].second;
-    auto &scheduledEvents = BB[time].first;
+    auto activityList = copyBB[time].second;
+    auto &scheduledEvents = copyBB[time].first;
+    auto &usedGatesPtr = c.getUsedGatesPtr();
+    int isCounter = 0;
 
 
     //While the activity list is not empty
+
     while (!activityList.empty())
     {
         //Access the top element is Activity List
-        auto &gate = BB[time].second.front();
+        auto &gate = copyBB[time].second.front();
+        auto &gateBB = BB[time].second.front();
+
 
         for (int i = 0; i < scheduledEvents.size(); i++)
         {
 
-            auto value = get<1>(BB[time].first[i]);
-            string input_Name = get<0>(BB[time].first[i]);
+            auto value = get<1>(copyBB[time].first[i]);
+            string input_Name = get<0>(copyBB[time].first[i]);
 
             //We know that at least one inputs exists so here we know a value must be changed or added
-            input_exists(gate, input_Name, value, time);
-            //This should only pop from the local activityList
-            activityList.pop();
+            if(input_exists(gate, input_Name,  value, time))
+            {
+                for(auto& x: usedGatesPtr)
+                {
+                    for(auto &y : x->getREF_cir_Input_Names())
+                    {
+
+                        for(auto &z : gate->getREF_cir_Input_Names())
+                        {
+                            if(y.first == z.first)
+                            {
+                                //Does update it but something is bringing it back to 0
+                                y.second = z.second;
+
+                            }
+                        }
+                    }
+                }
+
+
+                //The gate in the actitvity list should get the new cir Input names here
+                //So I will do gate in activity list . set cir input names to the current one
+                if(!activityList.empty())
+                    activityList.pop();
+
+            }
+
+            gateBB = gate;
+
         }
+
     }
 
 
 }
+
+
 
 
 
@@ -88,8 +117,8 @@ void fill_scheduled_events(circuit &c, boss &BB)
 
     auto &inputs = c.getcirInputsREF();
     int i = 0;
-   // auto element_0 = BB[0].first[0];
-   // auto logic_0 = BB[0].second.front();
+    // auto element_0 = BB[0].first[0];
+    // auto logic_0 = BB[0].second.front();
     // i is the index in cirInputs
     while (i != inputs.size())
     {
@@ -102,277 +131,343 @@ void fill_scheduled_events(circuit &c, boss &BB)
 
 }
 
-//I write later
-void searchQueue()
+bool existsInQueue(boss BB, string componentName, int time)
 {
+
+    queue<shared_ptr<Logic_Gate>> checkQueue = BB[time].second;
+    stack<string> compName;
+
+    while(!checkQueue.empty())
+    {
+        shared_ptr<Logic_Gate> element = checkQueue.front();
+        checkQueue.pop();
+        if(element->getCirCompName() == componentName)
+            return true;
+
+    }
+
+    return false;
 
 }
 
 //This adds all elements to the activity list; Should be called at any time when there is an event in scheduled events
-void fillActivityList(circuit &c, boss &BB, int &time)
-{
+void fillActivityList(circuit &c, boss &BB, int &time, map<string, int> &counter, boss &copyBB) {
 
-    vector<Logic_Gate> usedGates = c.getREF_usedGates();
-
-
-    //Accessing element in BB at time
     auto &pair = BB[time];
-        //pair is an element from the map; pair.second is the pair inside the map; pair.second.first is scheduled events
-        //Accessing each element in Scheduled events
-        auto &scheduledEvents = (pair.first);
-        auto &activityList = (pair.second);
-        for(int i =0; i<scheduledEvents.size(); i++)
-        {
-            auto &event = scheduledEvents[i];
-            string input_Name = get<0>(event);
+    auto &copyPair = copyBB[time];
 
-            for(auto &gate : usedGates)
-            {
-                //If both inputs are events, the gate is pushed twice
-                if(input_exists_bool(gate, input_Name))
-                {
-                    activityList.push(gate); //Add this gate to the activityList
-                    cout<<"Added: "<<gate.getCirCompName()<<" at time: "<<time<<" to activity list."<<endl;
-                }
+    auto &scheduledEvents = pair.first;
+    auto &activityList = pair.second;
+    auto &copyActivityList = copyPair.second;
+
+    for (int i = 0; i < scheduledEvents.size(); i++) {
+        auto &event = scheduledEvents[i];
+        string input_Name = get<0>(event);
+        auto value = get<1>(event);
+
+        for (auto &gatePtr : c.getUsedGatesPtr()) {
+            string componentName = gatePtr->getCirCompName();
+
+            if (input_exists_bool(gatePtr, input_Name, value)) {
+                // If gate meets criteria, add it to the copyActivityList
+                copyActivityList.push(gatePtr);
+                cout << "Added to copyActivityList: " << gatePtr->getCirCompName() << " at time: " << time << endl;
             }
 
+            if (!existsInQueue(BB, componentName, time)) {
+                if (input_exists_bool(gatePtr, input_Name, value)) {
+                    // Additionally, if the gate isn't already in the activity list, add it
+                    activityList.push(gatePtr);
+                    cout << "Added to activityList: " << gatePtr->getCirCompName() << " at time: " << time << endl;
+                }
+            }
         }
-
+    }
 }
+
 
 void addOutputsToScheduledEvents(boss &BB, int &time)
 {
 
     auto &scheduledEvents = BB[time].first;
     auto activityList = BB[time].second;
+    bool output;
+    int newTime = 0;
 
 
     while(!activityList.empty())
     {
-        Logic_Gate frontGate = activityList.front();
+
+        shared_ptr<Logic_Gate> frontGate = activityList.front();
         activityList.pop();
-        //run operator
-        //push output into activity list
+
+        output = evaluate(frontGate, time);
+        newTime = get_TimeStamp(frontGate, time);
+        string outputName = frontGate->getCirOutputName();
+        (BB[newTime].first).push_back(make_tuple(outputName, output, newTime));
+        cout<<"output is: "<<output<<" for "<<outputName<<endl;
 
     }
 
 }
 
-    void runAlgorithm(circuit &c, boss &BB)
+
+void printConsolidatedBB(const boss& BB) {
+    // Check if BB is empty
+    if (BB.empty()) {
+        std::cout << "BB is empty, no data to display." << std::endl;
+        return;
+    }
+
+    std::cout << "Time\tEvents (Input/Output, Value)\n";
+
+    // Iterate over each time step in BB
+    for (const auto& timeEntry : BB) {
+        int time = timeEntry.first;
+        const auto& events = timeEntry.second.first; // The vector of events
+
+        // Use a map to track the latest value for each signal at this time step
+        std::map<std::string, bool> consolidatedEvents;
+
+        // Populate consolidatedEvents with the latest value of each signal
+        for (const auto& event : events) {
+            std::string name = std::get<0>(event); // Input/Output name
+            bool value = std::get<1>(event); // The boolean value
+            consolidatedEvents[name] = value;
+        }
+
+        // Now print the consolidated events for this time step
+        std::cout << time << "\t";
+        for (const auto& event : consolidatedEvents) {
+            std::cout << event.first << ": " << event.second << "; ";
+        }
+        std::cout << "\n";
+    }
+}
+
+
+void runAlgorithm(circuit &c, boss &BB, int maxTime)
+{
+
+    boss copyBB;
+    map<string, int> counter;
+    c.updateUsedGatesPtr();
+    vector<shared_ptr<Logic_Gate>> usedGates = c.getUsedGatesPtr(); // Assuming getREF_usedGates is updated
+
+
+    copyBB = BB;
+    for(auto &row : BB)
     {
 
-        for(auto &row : BB)
+        int time = row.first;
+        if(time <= maxTime)
         {
-            int time = row.first;
-            fillActivityList(c, BB,time);
-            update_cirInputs_names(BB, time);
-            //addOutputsToScheduledEvents
+            fillActivityList(c, BB,time, counter, copyBB);
 
+            update_cirInputs_names(c,copyBB, BB,time, counter);
+
+            addOutputsToScheduledEvents(BB, time);
+            copyBB = BB;
         }
+        else
+        {
+
+            cout<<"Maximum time for simulation reached."<<endl;
+            printConsolidatedBB(BB);
+            exit(0);
+        }
+
+
+
     }
 
-//Add gates that are activated by events into activity list
-//Map the inputs to the present elements of the gates in activity list
-//
+
+
+    printConsolidatedBB(BB);
+}
+
 
 
 int main()
 {
-    circuit c4;
     boss BB;
     vector<vector<string>> components;
+    int x = 0;
+    int maxTime = 0;
 
-    //Reading Files
-    c4.read_lib_file(
-            "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Circuit 1/LibraryFile.lib",
-            "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Circuit 1/test_circuit_1 - circuit file.txt");
-    c4.read_stim_file(
-            "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Circuit 5/test_circuit_5.stim");
-    c4.write_to_sim(
-            "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Circuit 5/writeToSim.txt");
+    cout<<"Choose which test circuit you want to run: "<<endl;
+    cout<<"1: BB Test 1"<<endl<<"2: BB Test 2"<<endl<<"3: BB Test 3"<<endl<<"4: BB Test 4"<<
+    endl<<"5: Test Circuit 1"<<endl<<"6: Test Circuit 2"<<endl<<"7: Test Circuit 3"<<endl<<
+    "8: Test Circuit 4"<<endl<<"9: Test Circuit 5"<<endl<<"10: Test Circuit 6"<<endl;
+    cin>>x;
+    cout<<"What is the maximum time of the simulation: "<<endl;
+    cin>>maxTime;
 
-    //Filling Scheduled Events with all events in the .stim file from cirInputs
-    fill_scheduled_events(c4, BB);
+    if(x==1)
+    {
+        //BB Test 1
+        circuit c4;
 
-    runAlgorithm(c4, BB);
+        //Reading Files
+        c4.read_lib_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/cells.lib",
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/1.cir");
+        c4.read_stim_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/1.stim");
+        //c4.write_to_sim(
+        fill_scheduled_events(c4, BB);
+
+        runAlgorithm(c4, BB, maxTime);
+    }
+    else if(x==2)
+    {
+        //ERROR HANDLING
+        //BB Test 2
+        circuit c4;
+
+        c4.read_lib_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/cells.lib",
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/2.cir");
+        c4.read_stim_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_2.stim");
+        //c4.write_to_sim(
+        fill_scheduled_events(c4, BB);
+
+        runAlgorithm(c4, BB, maxTime);
+    }
+    else if(x==3)
+    {
+        //ERROR HANDLING
+        //BB Test 3
+        circuit c4;
+
+        c4.read_lib_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/cells.lib",
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/3.cir");
+        c4.read_stim_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/2(1).stim");
+        //c4.write_to_sim(
+        fill_scheduled_events(c4, BB);
+
+        runAlgorithm(c4, BB, maxTime);
+    }
+    else if(x==4)
+    {
+        //BB Test 4
+        circuit c4;
+
+        c4.read_lib_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/cells.lib",
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/4.cir");
+        c4.read_stim_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/2(1).stim");
+        //c4.write_to_sim(
+        fill_scheduled_events(c4, BB);
+
+        runAlgorithm(c4, BB, maxTime);
+
+    }
+    else if(x==5)
+    {
+        //Test Circuit 1
+        circuit c4;
+
+        c4.read_lib_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/LibraryFile.lib",
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_1.cir");
+        c4.read_stim_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_1.stim");
+        //c4.write_to_sim(
+        fill_scheduled_events(c4, BB);
+
+        runAlgorithm(c4, BB, maxTime);
+
+    }
+
+    else if(x==6)
+    {
+        //Test Circuit 2
+        circuit c4;
+
+        c4.read_lib_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/LibraryFile.lib",
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_2.cir");
+        c4.read_stim_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_4.stim");
+        //c4.write_to_sim(
+        fill_scheduled_events(c4, BB);
+
+        runAlgorithm(c4, BB, maxTime);
+
+    }
+    else if(x==7)
+    {
+        //Test Circuit 3
+        circuit c4;
+
+        c4.read_lib_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/LibraryFile.lib",
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_3.cir");
+        c4.read_stim_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_4.stim");
+        //c4.write_to_sim(
+        fill_scheduled_events(c4, BB);
+
+        runAlgorithm(c4, BB, maxTime);
+
+    }
+    else if(x==8)
+    {
+        //Test Circuit 4
+        circuit c4;
+
+        c4.read_lib_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/LibraryFile.lib",
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_4.cir");
+        c4.read_stim_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_4.stim");
+        //c4.write_to_sim(
+        fill_scheduled_events(c4, BB);
+
+        runAlgorithm(c4, BB, maxTime);
+
+    }
+    else if(x==9)
+    {
+        //Test Circuit 5
+        circuit c4;
+
+        c4.read_lib_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/LibraryFile.lib",
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_5.cir");
+        c4.read_stim_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_5.stim");
+        //c4.write_to_sim(
+        fill_scheduled_events(c4, BB);
+
+        runAlgorithm(c4, BB, maxTime);
+
+    }
+    else if(x==10)
+    {
+        //Test Circuit 6
+        circuit c4;
+
+        c4.read_lib_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/LibraryFile.lib",
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_6.cir");
+        c4.read_stim_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_4.stim");
+        //c4.write_to_sim(
+        fill_scheduled_events(c4, BB);
+
+        runAlgorithm(c4, BB , maxTime);
+
+    }
 
 
 
 
-    // preoperator(c1);
     return 0;
 }
-
-
-// void preoperator(circuit &c)
-// {
-//         boss BB;
-//         int i = 0;
-// vector<vector<string>> &components;
-//         string file_name = ("C:/Users/Power/Documents/GitHub/Logic-Circuit-Simulator/Test Circuits/Circuit 1/LibraryFile.lib");
-//         c.read_lib_file("C:/Users/Power/Documents/GitHub/Logic-Circuit-Simulator/Test Circuits/Circuit 1/LibraryFile.lib", file_name);
-//         c.read_stim_file("C:/Users/Power/Documents/GitHub/Logic-Circuit-Simulator/Test Circuits/Circuit 1/test_circuit_1 - circuit file.txt");
-//         c.fillvector(components, "C:/Users/Power/Documents/GitHub/Logic-Circuit-Simulator/Test Circuits/Circuit 1/test_circuit_1.cir");
-
-//         while (i != BB[])
-//         {
-
-//                 auto element_0 = BB[0].first[0];
-//                 auto logic_0 = BB[0].second.front();
-
-//                 cout << "Current element(s) from scheduled events:" << '\t' << get<0>(element_0);
-//                 cout << "Current act list:" << '\t' << logic_0.getCirCompName();
-//         }
-=======
-void fill_scheduled_events(circuit &c, boss &BB)
-{
-        queue<Logic_Gate> qu;
-        auto &inputs = c.getcirInputsREF();
-        int i = 0;
-        auto element_0 = BB[0].first[0];
-        auto logic_0 = BB[0].second.front();
-        // i is the index in cirInputs
-        while (i != inputs.size())
-        {
-                // At the time in the current cirinput element, we added to its vector a tuple(current tuple in cirinputs)
-
-                (BB[get<2>(inputs[i])].first).push_back(inputs[i]);
-                cout << "At time: " << get<2>(inputs[i]) << " with values" << get<0>((BB[get<2>(inputs[i])].first).back()) << '\t' << get<1>((BB[get<2>(inputs[i])].first).back()) << get<2>((BB[get<2>(inputs[i])].first).back()) << endl;
-        }
-}
-// void preoperator(circuit &c)
-// {
-//         boss BB;
-//         int i = 0;
-// vector<vector<string>> &components;
-//         string file_name = ("C:/Users/Power/Documents/GitHub/Logic-Circuit-Simulator/Test Circuits/Circuit 1/LibraryFile.lib");
-//         c.read_lib_file("C:/Users/Power/Documents/GitHub/Logic-Circuit-Simulator/Test Circuits/Circuit 1/LibraryFile.lib", file_name);
-//         c.read_stim_file("C:/Users/Power/Documents/GitHub/Logic-Circuit-Simulator/Test Circuits/Circuit 1/test_circuit_1 - circuit file.txt");
-//         c.fillvector(components, "C:/Users/Power/Documents/GitHub/Logic-Circuit-Simulator/Test Circuits/Circuit 1/test_circuit_1.cir");
-
-//         while (i != BB[])
-//         {
-
-//                 auto element_0 = BB[0].first[0];
-//                 auto logic_0 = BB[0].second.front();
-
-//                 cout << "Current element(s) from scheduled events:" << '\t' << get<0>(element_0);
-//                 cout << "Current act list:" << '\t' << logic_0.getCirCompName();
-//         }
-// }
-int main()
-{
-        circuit c1;
-        boss BB;
-        vector<vector<string>> components;
-
-        string file_name = ("C:/Users/Power/Documents/GitHub/Logic-Circuit-Simulator/Test Circuits/Circuit 1/LibraryFile.lib");
-        c1.read_lib_file("C:/Users/Power/Documents/GitHub/Logic-Circuit-Simulator/Test Circuits/Circuit 1/LibraryFile.lib",
-                         "C:/Users/Power/Documents/GitHub/Logic-Circuit-Simulator/Test Circuits/Circuit 1/test_circuit_1 - circuit file.txt");
-        c1.read_stim_file("C:/UsersPower/Documents/GitHub/Logic-Circuit-Simulator/Test Circuits/Circuit 1/test_circuit_1.stim");
-        // c1.fillvector(components, "C:/Users/Power/Documents/GitHub/Logic-Circuit-Simulator/Test Circuits/Circuit 1/test_circuit_1 - circuit file.txt");
-        fill_scheduled_events(c1, BB);
-        // preoperator(c1);
-        return 0;
-}
-
-// int main(int argc, char **argv)
-// {
-
-//         int x = 0;
-//         char y;
-
-//         do
-//         {
-//                 x = 0;
-//                 cout << "Choose the circuit you would like to test: " << endl;
-//                 cout << "1: Circuit 1" << endl
-//                      << "2: Circuit 2" << endl
-//                      << "3: Circuit 3" << endl
-//                      << "4: Circuit 4" << endl
-//                      << "5: Circuit 5" << endl
-//                      << "6: Circuit 6" << endl;
-//                 cin >> x;
-//                 if (x == 1)
-//                 {
-//                         // Circuit 1
-//                         circuit c4;
-//                         c4.read_lib_file(
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 1/test_circuit_1 - Copy.txt");
-//                         c4.read_stim_file(
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
-//                         c4.write_to_sim(
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 1/circuit_1_sim.sim");
-//                         runProgram(c4);
-//                 }
-//                 else if (x == 2)
-//                 {
-//                         // Circuit 2
-//                         circuit c5;
-//                         c5.read_lib_file(
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 2/test_circuit_2 - Copy.txt");
-//                         c5.read_stim_file(
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
-//                         c5.write_to_sim(
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 2/circuit_2_sim.sim");
-//                         runProgram(c5);
-//                 }
-//                 else if (x == 3)
-//                 {
-//                         // Circuit 3
-//                         circuit c1;
-//                         c1.read_lib_file(
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 3/test_circuit_3 - Copy.txt");
-//                         c1.read_stim_file(
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
-//                         c1.write_to_sim(
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 3/testcircuit3.sim");
-//                         runProgram(c1);
-//                 }
-//                 else if (x == 4)
-//                 {
-//                         // Circuit 4
-//                         circuit c2;
-//                         c2.read_lib_file(
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 4/test_circuit_4 - Copy.txt");
-//                         c2.read_stim_file(
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
-//                         c2.write_to_sim(
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 4/testcircuit4.sim");
-//                         runProgram(c2);
-//                 }
-//                 else if (x == 5)
-//                 {
-//                         // Circuit 5
-//                         circuit c;
-//                         c.read_lib_file(
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5 - Copy.txt");
-//                         c.read_stim_file(
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
-//                         c.write_to_sim(
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/writeToSim.txt");
-//                         runProgram(c);
-//                 }
-//                 else if (x == 6)
-//                 {
-//                         circuit c3;
-//                         c3.read_lib_file(
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/LibraryFile.lib",
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 6/test_circuit_6 - Copy.txt");
-//                         c3.read_stim_file(
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 5/test_circuit_5.stim");
-//                         c3.write_to_sim(
-//                             "C:/Users/Fawzy/Spring 2024/Digital Design I/Project 1/Logic-Circuit-Simulator/Test Circuits/Circuit 6/circuit 6.sim");
-//                         runProgram(c3);
-//                 }
-
-//                 cout << "Test another?(y/n) " << endl;
-//                 cin >> y;
-
-//         } while (y == 'y');
 
