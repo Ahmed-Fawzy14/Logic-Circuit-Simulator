@@ -8,6 +8,7 @@
 #include <utility>
 #include <sstream>
 #include <functional>
+#include <regex>
 
 
 using namespace std;
@@ -37,109 +38,49 @@ int applyUnaryOp(int a, char op){
     return 0;
 }
 
-<<<<<<< Updated upstream
-//start of inserting values into expression
-// this function returns the prefix of the operand in the expression in case it is not "i"
-string getoperand(const string &expression)
+string replaceOperands(shared_ptr<Logic_Gate> gate, bool &samevalue)
 {
-    for (int i = 0; i < expression.size(); i++)
-    { // loops through all expressions looking for operands
-        if (isdigit(expression[i]))
-        { // digit found
-            int prefixend = i;
-            if (prefixend == 0)
-                continue; // makes sure code doesnt leave string
-            int prefixstart = i - 1;
-            while (prefixstart > 0 && isalpha(expression[prefixstart - 1]))
-            {
+    string updatedExpression = gate->getExpression();
+    auto inputs = gate->get_cir_Input_Names();
+    int expectedinputs = gate->getNumOfInputs();
 
-                prefixstart--;
-            }
-            return expression.substr(prefixstart, prefixend);
-        }
-    }
-    return " ";
-}
-
-string insertValuesInExpression(Logic_Gate gate1)
-{
-    // 1 & 0
-    // A(1), B(0)
-
-    // i1 & i2
-    // A, B, C
-
-    // substitue in the expression each operand with the value of the input
-
-    // check that cirinputnames(in cir file)== gate.noinputs(lib)
-
-    string expression = gate1.getExpression(); // extract expression
-    string prefix = getoperand(expression);
-    cout << prefix;
-    if (prefix.empty())
-    {
-        cout << "No operand prefix detected." << endl;
-        return expression; // return the original expression if no prefix is detected
-    }
-=======
-void insertValuesInExpression(string &exp, vector<pair<string,int>> &sample_cir_Input_Names) {
-
-    //1 & 0
-    //A(1), B(0)
-
-    //check that cirinput names== gate.noinputs
-
-
-    //i1 & i2
-    //A, B, C
-
-
->>>>>>> Stashed changes
-
-    vector<pair<string, int>> inputs = gate1.get_cir_Input_Names(); // extract cirinputnames
-    // vector<pair<string, int>> inputs = sample_cir_Input_Names;
-
-    int expectedinputs = gate1.getNumOfInputs();
     if (inputs.size() != expectedinputs) // makes sure the number of inputs and the size of vector are equal
     {
         cout << "number of inputs is not same as expected " << endl;
+        samevalue = false;
         return "";
     }
     else
     {
         for (int i = 0; i < inputs.size(); ++i)
         {
-            string operandexpression = prefix + to_string(i + 1); // make a variable with the operand in the expression
-            size_t position = expression.find(operandexpression); // find first instance of the operand in expression
-            while (position != string::npos)
-            {
-                expression.replace(position, operandexpression.length(), to_string(inputs[i].second)); // replaces instance of operandexpression with value of input in cirinputs
-                position = expression.find(operandexpression, position + 1);
-            }
+            // Construct the operand placeholder based on input order (e.g., "i1", "i2", etc.)
+            string operand = "i" + to_string(i + 1);
+            string value = to_string(inputs[i].second);
+
+            regex pattern(operand + "(\\D|$)");
+
+            updatedExpression = regex_replace(updatedExpression, pattern, value + "$1");
         }
-        return expression;
+        return updatedExpression;
     }
 }
 
-int evaluate(circuit &c, int usedGates_Index){
 
 
-    string tokens = (c.getusedGates())[usedGates_Index].getExpression();
-    vector<pair<string,int>> sample_cir_Input_Names = (c.getusedGates())[usedGates_Index].get_cir_Input_Names();
+bool evaluate(shared_ptr<Logic_Gate> g, int time){
+
+
+    vector<pair<string,int>> cir_Input_Names = g->get_cir_Input_Names();
+    bool samenumber = true;
+
 
     stack<int> numbers;
     //operators
     stack<char> ops;
-    int checkNumOfInputs = 0;
-
-    insertValuesInExpression(tokens, sample_cir_Input_Names, checkNumOfInputs);
 
 
-    if(checkNumOfInputs != (c.getusedGates())[usedGates_Index].getNumOfInputs())
-    {
-       // cout<<"Invalid inputs number for component: "<<(c.getusedGates())[usedGates_Index].getCirOutputName()<<endl;
-        return -1;
-    }
+    string tokens = replaceOperands(g, samenumber);
 
 
 // The revised part of the evaluate function
@@ -245,50 +186,6 @@ int evaluate(circuit &c, int usedGates_Index){
 }
 
 
-void input_exists_hashed(circuit &c, unordered_map<string, pair<bool, bool>> &flag, int &index) {
-    for (auto &gate : c.getREF_usedGates()) {
-        bool allInputsPresent = true;
-        std::string inputSequence;
-
-        // Construct the input sequence string
-        for (auto &input : gate.getREF_cir_Input_Names()) {
-            auto search = c.getcurrent_Inputs_MapREF().find(input.first);
-            if (search != c.getcurrent_Inputs_MapREF().end()) {
-                input.second = std::get<1>(search->second); // Update input value
-                inputSequence += std::to_string(input.second) + ",";
-            } else {
-                allInputsPresent = false; // Not all inputs are present
-                break;
-            }
-        }
-
-        if (allInputsPresent) {
-            // Compute hash of the input sequence
-            std::hash<std::string> hasher;
-            std::size_t sequenceHash = hasher(inputSequence);
-
-            // Check if the hash exists in the gate's previousInputHashes
-            if (gate.previousInputHashes.find(sequenceHash) == gate.previousInputHashes.end()) {
-                // It's a new sequence, so process accordingly and add hash to set
-                gate.previousInputHashes.insert(sequenceHash);
-                flag[gate.getCirCompName()] = std::make_pair(true, true); // Ready for processing
-            } else {
-                // Sequence has been seen before, not ready for processing
-<<<<<<< Updated upstream
-                flag[gate.getCirCompName()] = std::make_pair(true, false);
-=======
-              //  flag[gate.getCirCompName()] = std::make_pair(true, false);
->>>>>>> Stashed changes
-            }
-        } else {
-            // If not all inputs are present, indicate that the gate is not ready for processing
-            flag[gate.getCirCompName()] = std::make_pair(false, false);
-        }
-    }
-
-    index++; // Increment index for tracking purposes
-}
-
 int find_usedGates_Index(circuit &c,string comp_Name)
 {
     int index = 0;
@@ -312,13 +209,12 @@ int find_usedGates_Index(circuit &c,string comp_Name)
 
 
 
-int get_TimeStamp(circuit &sample_c, int current_Time, int usedGates_Index )
+int get_TimeStamp(shared_ptr<Logic_Gate> gate, int current_Time)
 {
 
     int delay_ps = 0;
 
-    Logic_Gate gate = (sample_c.getusedGates())[usedGates_Index];
-    delay_ps = gate.getDelayPs() + current_Time-1;
+    delay_ps = gate->getDelayPs() + current_Time;
 
     return delay_ps;
 
@@ -326,66 +222,3 @@ int get_TimeStamp(circuit &sample_c, int current_Time, int usedGates_Index )
 
 
 
-int run_Operator_Test(circuit &c, int current_Time, unordered_map<string, tuple <string, bool, int>> &current_Outputs_Map, int &prevInpIndex)
-{
-
-    //Is used to map the same of a circuit component to whether it is ready to be evaluated
-    //first bool for each input, second bool for all inputs
-    unordered_map<string, pair<bool,bool>> flag;
-    //initial run of input exists
-    input_exists_hashed(c,  flag, prevInpIndex);
-
-
-    //Each output to be evaluated then pushed into current_Inputs_Map
-    int output = -2;
-
-    //Each time to be evaluated then pushed into current_Inputs_Map
-    int new_Time = 0;
-
-    unordered_map<string, int> final_Outputs;
-
-    for(auto &element : flag)
-    {
-        int usedGates_Index = find_usedGates_Index(c,element.first);
-        Logic_Gate current_Gate = c.getusedGates()[usedGates_Index];
-        string current_comp_name = (c.getusedGates())[usedGates_Index].getCirOutputName();
-        auto current_cirInputNames = (current_Gate.get_cir_Input_Names());
-        auto current_Output_Name = c.getusedGates()[usedGates_Index].getCirOutputName();
-
-        if(current_Gate.getNumOfInputs() != (current_cirInputNames).size())
-        {
-        }
-
-
-        //If all inputs are present
-        if((element.second).second == 1)
-        {
-
-
-            output = evaluate(c, usedGates_Index);
-
-            if(output == -1)
-<<<<<<< Updated upstream
-            {
-=======
-            {           cout<<"Invalid inputs number for component: "<<current_Gate.getCirCompName()<<endl;
-
->>>>>>> Stashed changes
-                return -1;
-            }
-            else if(output == 0 || output ==  1)
-            {
-                new_Time = get_TimeStamp(c, current_Time, usedGates_Index);
-                (c.getcirInputsREF()).push_back(make_tuple(current_comp_name, output, new_Time));
-            }
-
-        }
-        else
-        {
-            //Component is not ready
-        }
-    }
-
-    return 0;
-
-}
