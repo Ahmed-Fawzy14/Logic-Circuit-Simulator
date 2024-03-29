@@ -93,7 +93,8 @@ void update_cirInputs_names(circuit &c,boss &copyBB, boss &BB,int &time, map<str
 
                 //The gate in the actitvity list should get the new cir Input names here
                 //So I will do gate in activity list . set cir input names to the current one
-                activityList.pop();
+                if(!activityList.empty())
+                    activityList.pop();
 
             }
 
@@ -290,7 +291,7 @@ int main()
     cout<<"Choose which test circuit you want to run: "<<endl;
     cout<<"1: BB Test 1"<<endl<<"2: BB Test 2"<<endl<<"3: BB Test 3"<<endl<<"4: BB Test 4"<<
     endl<<"5: Test Circuit 1"<<endl<<"6: Test Circuit 2"<<endl<<"7: Test Circuit 3"<<endl<<
-    "8: Test Circuit 4"<<endl;
+    "8: Test Circuit 4"<<endl<<"9: Test Circuit 5"<<endl<<"10: Test Circuit 6"<<endl;
     cin>>x;
     //cout<<"What is the maximum time of the simulation: "<<endl;
     //cin>>maxTime;
@@ -321,7 +322,7 @@ int main()
                 "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/cells.lib",
                 "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/2.cir");
         c4.read_stim_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/1.stim");
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_2.stim");
         //c4.write_to_sim(
         fill_scheduled_events(c4, BB);
 
@@ -375,31 +376,17 @@ int main()
         runAlgorithm(c4, BB);
 
     }
-    else if(x==5)
+
+    else if(x==6)
     {
-        //Test Circuit 1
-        circuit c4;
-
-        c4.read_lib_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/LibraryFile.lib",
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_1.cir");
-        c4.read_stim_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_1.stim");
-        //c4.write_to_sim(
-        fill_scheduled_events(c4, BB);
-
-        runAlgorithm(c4, BB);
-
-    }else if(x==6)
-    {
-        //Test Circuit 1
+        //Test Circuit 2
         circuit c4;
 
         c4.read_lib_file(
                 "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/LibraryFile.lib",
                 "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_2.cir");
         c4.read_stim_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_2.stim");
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_4.stim");
         //c4.write_to_sim(
         fill_scheduled_events(c4, BB);
 
@@ -408,14 +395,14 @@ int main()
     }
     else if(x==7)
     {
-        //Test Circuit 1
+        //Test Circuit 3
         circuit c4;
 
         c4.read_lib_file(
                 "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/LibraryFile.lib",
                 "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_3.cir");
         c4.read_stim_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_3.stim");
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_4.stim");
         //c4.write_to_sim(
         fill_scheduled_events(c4, BB);
 
@@ -424,7 +411,7 @@ int main()
     }
     else if(x==8)
     {
-        //Test Circuit 1
+        //Test Circuit 4
         circuit c4;
 
         c4.read_lib_file(
@@ -438,6 +425,39 @@ int main()
         runAlgorithm(c4, BB);
 
     }
+    else if(x==9)
+    {
+        //Test Circuit 5
+        circuit c4;
+
+        c4.read_lib_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/LibraryFile.lib",
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_5.cir");
+        c4.read_stim_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_5.stim");
+        //c4.write_to_sim(
+        fill_scheduled_events(c4, BB);
+
+        runAlgorithm(c4, BB);
+
+    }
+    else if(x==10)
+    {
+        //Test Circuit 6
+        circuit c4;
+
+        c4.read_lib_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/LibraryFile.lib",
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_4.cir");
+        c4.read_stim_file(
+                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_4.stim");
+        //c4.write_to_sim(
+        fill_scheduled_events(c4, BB);
+
+        runAlgorithm(c4, BB);
+
+    }
+
 
 
 
