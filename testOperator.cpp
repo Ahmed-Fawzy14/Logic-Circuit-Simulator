@@ -44,10 +44,11 @@ string replaceOperands(shared_ptr<Logic_Gate> gate, bool &samevalue)
     auto inputs = gate->get_cir_Input_Names();
     int expectedinputs = gate->getNumOfInputs();
 
-    if (inputs.size() != expectedinputs) // makes sure the number of inputs and the size of vector are equal
+    if (inputs.size() != expectedinputs) //Error handeling for incomplete inputs in .cir
     {
-        cout << "number of inputs is not same as expected " << endl;
+        cerr << "number of inputs is not same as expected " << endl;
         samevalue = false;
+        exit(1);
         return "";
     }
     else
@@ -82,8 +83,6 @@ bool evaluate(shared_ptr<Logic_Gate> g, int time){
 
     string tokens = replaceOperands(g, samenumber);
 
-
-// The revised part of the evaluate function
     for(int i = 0; i < tokens.length(); ++i){
         if(tokens[i] == ' ') continue;
 
