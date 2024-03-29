@@ -6,7 +6,7 @@
 #include <stack>
 #include <vector>
 #include <memory>
-#include "Logic_Gate.h" // Assuming this is the header for Logic_Gate class
+#include "Logic_Gate.h" 
 #include "circuit.h"
 
 // Function to determine the precedence of boolean algebra operators
