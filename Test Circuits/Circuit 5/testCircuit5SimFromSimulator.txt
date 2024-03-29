@@ -1,4 +1,10 @@
 Time	Events (Input/Output, Value)
+0   A: 0;
+0   B: 0;
+0   C: 0;
+150  w1:1;
+150  w2:1;
+350  X:1; 
 500	C: 1; 
 650	w2: 1; 
 850	X: 1; 
