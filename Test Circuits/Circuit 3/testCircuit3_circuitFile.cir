@@ -6,3 +6,4 @@ COMPONENTS:
 G0, OR2, w1, A, B
 G1, OR2, w2, A, C
 G2, NOT, w3, C
+G3, AND2, f, w1, w2
