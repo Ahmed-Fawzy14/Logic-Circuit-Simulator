@@ -14,6 +14,8 @@
 int run_Operator_Test(circuit &c, int current_Time, unordered_map<string, tuple <string, bool, int>> &current_Outputs_Map, int &prevInpIndex);
 void input_exisits(circuit &c,  unordered_map<string, pair<bool,bool>> &flag, int &index);
 int find_usedGates_Index(circuit &sample_c, string comp_Name);
-int get_TimeStamp(circuit &sample_c, int current_Time, int usedGates_Index );
+int get_TimeStamp(shared_ptr<Logic_Gate> gate, int current_Time);
 void insertValuesInExpression(string &tokens, vector<pair<string,int>> &cir_Input_Names, int &checkNumOfInputs);
+bool evaluate(shared_ptr<Logic_Gate> g, int time);
+
 #endif //LOGIC_CIRCUIT_SIMULATOR_TESTOPERATOR_H
