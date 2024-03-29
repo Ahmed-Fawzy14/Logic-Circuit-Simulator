@@ -10,21 +10,20 @@
 #include <map>
 #include <queue>
 #include <stack>
+#include <limits>
 #include "circuit.h"
-
-typedef map<int, pair<vector<tuple<string, bool, int>>, queue<shared_ptr<Logic_Gate>>>> boss;
+//TimeStack, Scheduled Events, Activity List
+typedef map<int, pair<vector<tuple<string, bool, int>>, queue<shared_ptr<Logic_Gate>>>> EventDriven;
 
 using namespace std;
 
 
-//Changed int to bool
 
 //Tests if a single gate has this input
 bool input_exists(shared_ptr<Logic_Gate> &gate, string &Input_name, bool &val, int time) {
     for (auto &element : gate->getREF_cir_Input_Names()) {
         if (element.first == Input_name) {
             element.second = val;
-           // cout << element.first << " now has value " << val << " in " << gate->getCirCompName() << " at time " << time << endl;
             return true;
         }
     }
@@ -45,12 +44,12 @@ bool input_exists_bool(shared_ptr<Logic_Gate> &gate, string &Input_name, bool &v
 
 
 //Changed get<2> to get<1> since it should pass bool
-void update_cirInputs_names(circuit &c,boss &copyBB, boss &BB,int &time, map<string, int> counter)
+void update_cirInputs_names(circuit &c,EventDriven &copyallStructures, EventDriven &allStructures,int &time, map<string, int> counter)
 {
 
 
-    auto activityList = copyBB[time].second;
-    auto &scheduledEvents = copyBB[time].first;
+    auto activityList = copyallStructures[time].second;
+    auto &scheduledEvents = copyallStructures[time].first;
     auto &usedGatesPtr = c.getUsedGatesPtr();
     int isCounter = 0;
 
@@ -60,15 +59,15 @@ void update_cirInputs_names(circuit &c,boss &copyBB, boss &BB,int &time, map<str
     while (!activityList.empty())
     {
         //Access the top element is Activity List
-        auto &gate = copyBB[time].second.front();
-        auto &gateBB = BB[time].second.front();
+        auto &gate = copyallStructures[time].second.front();
+        auto &gateallStructures = allStructures[time].second.front();
 
 
         for (int i = 0; i < scheduledEvents.size(); i++)
         {
 
-            auto value = get<1>(copyBB[time].first[i]);
-            string input_Name = get<0>(copyBB[time].first[i]);
+            auto value = get<1>(copyallStructures[time].first[i]);
+            string input_Name = get<0>(copyallStructures[time].first[i]);
 
             //We know that at least one inputs exists so here we know a value must be changed or added
             if(input_exists(gate, input_Name,  value, time))
@@ -98,7 +97,7 @@ void update_cirInputs_names(circuit &c,boss &copyBB, boss &BB,int &time, map<str
 
             }
 
-            gateBB = gate;
+            gateallStructures = gate;
 
         }
 
@@ -112,29 +111,18 @@ void update_cirInputs_names(circuit &c,boss &copyBB, boss &BB,int &time, map<str
 
 
 
-void fill_scheduled_events(circuit &c, boss &BB)
-{
-
-    auto &inputs = c.getcirInputsREF();
-    int i = 0;
-    // auto element_0 = BB[0].first[0];
-    // auto logic_0 = BB[0].second.front();
-    // i is the index in cirInputs
-    while (i != inputs.size())
-    {
-        // At the time in the current cirinput element, we added to its vector a tuple (current tuple in cirinputs)
-        (BB[get<2>(inputs[i])].first).push_back(inputs[i]);
-        //cout << "At time: " << get<2>(inputs[i]) << " with values name:" << get<0>((BB[get<2>(inputs[i])].first).back()) << '\t'<<"logic value: " << get<1>((BB[get<2>(inputs[i])].first).back()) << "time: "<<get<2>((BB[get<2>(inputs[i])].first).back()) << endl;
-        i++;
+void fill_scheduled_events(circuit& c, EventDriven& allStructures) {
+    auto& inputs = c.getCirInputsRef();
+    for (int i = 0; i < inputs.size(); ++i) {
+        allStructures[get<2>(inputs[i])].first.push_back(inputs[i]);
     }
-
-
 }
 
-bool existsInQueue(boss BB, string componentName, int time)
+
+bool existsInQueue(EventDriven allStructures, string componentName, int time)
 {
 
-    queue<shared_ptr<Logic_Gate>> checkQueue = BB[time].second;
+    queue<shared_ptr<Logic_Gate>> checkQueue = allStructures[time].second;
     stack<string> compName;
 
     while(!checkQueue.empty())
@@ -151,10 +139,10 @@ bool existsInQueue(boss BB, string componentName, int time)
 }
 
 //This adds all elements to the activity list; Should be called at any time when there is an event in scheduled events
-void fillActivityList(circuit &c, boss &BB, int &time, map<string, int> &counter, boss &copyBB) {
+void fillActivityList(circuit &c, EventDriven &allStructures, int &time, map<string, int> &counter, EventDriven &copyallStructures) {
 
-    auto &pair = BB[time];
-    auto &copyPair = copyBB[time];
+    auto &pair = allStructures[time];
+    auto &copyPair = copyallStructures[time];
 
     auto &scheduledEvents = pair.first;
     auto &activityList = pair.second;
@@ -171,14 +159,12 @@ void fillActivityList(circuit &c, boss &BB, int &time, map<string, int> &counter
             if (input_exists_bool(gatePtr, input_Name, value)) {
                 // If gate meets criteria, add it to the copyActivityList
                 copyActivityList.push(gatePtr);
-                cout << "Added to copyActivityList: " << gatePtr->getCirCompName() << " at time: " << time << endl;
             }
 
-            if (!existsInQueue(BB, componentName, time)) {
+            if (!existsInQueue(allStructures, componentName, time)) {
                 if (input_exists_bool(gatePtr, input_Name, value)) {
                     // Additionally, if the gate isn't already in the activity list, add it
                     activityList.push(gatePtr);
-                    cout << "Added to activityList: " << gatePtr->getCirCompName() << " at time: " << time << endl;
                 }
             }
         }
@@ -186,11 +172,11 @@ void fillActivityList(circuit &c, boss &BB, int &time, map<string, int> &counter
 }
 
 
-void addOutputsToScheduledEvents(boss &BB, int &time)
+void addOutputsToScheduledEvents(EventDriven &allStructures, int &time)
 {
 
-    auto &scheduledEvents = BB[time].first;
-    auto activityList = BB[time].second;
+    auto &scheduledEvents = allStructures[time].first;
+    auto activityList = allStructures[time].second;
     bool output;
     int newTime = 0;
 
@@ -204,25 +190,31 @@ void addOutputsToScheduledEvents(boss &BB, int &time)
         output = evaluate(frontGate, time);
         newTime = get_TimeStamp(frontGate, time);
         string outputName = frontGate->getCirOutputName();
-        (BB[newTime].first).push_back(make_tuple(outputName, output, newTime));
-        cout<<"output is: "<<output<<" for "<<outputName<<endl;
+        (allStructures[newTime].first).push_back(make_tuple(outputName, output, newTime));
 
     }
 
 }
 
 
-void printConsolidatedBB(const boss& BB) {
-    // Check if BB is empty
-    if (BB.empty()) {
-        std::cout << "BB is empty, no data to display." << std::endl;
+void printConsolidatedallStructures(const EventDriven& allStructures) {
+    // Open a file in write mode.
+    std::ofstream outFile("C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/circuit_1_sim.sim");
+
+    // Check if allStructures is empty
+    if (allStructures.empty()) {
+        std::cout << "allStructures is empty, no data to display." << std::endl;
+        // Write the same message to the file
+        outFile << "allStructures is empty, no data to display." << std::endl;
         return;
     }
 
     std::cout << "Time\tEvents (Input/Output, Value)\n";
+    // Write the same header to the file
+    outFile << "Time\tEvents (Input/Output, Value)\n";
 
-    // Iterate over each time step in BB
-    for (const auto& timeEntry : BB) {
+    // Iterate over each time step in allStructures
+    for (const auto& timeEntry : allStructures) {
         int time = timeEntry.first;
         const auto& events = timeEntry.second.first; // The vector of events
 
@@ -238,42 +230,47 @@ void printConsolidatedBB(const boss& BB) {
 
         // Now print the consolidated events for this time step
         std::cout << time << "\t";
+        // Write the same info to the file
+        outFile << time << "\t";
         for (const auto& event : consolidatedEvents) {
             std::cout << event.first << ": " << event.second << "; ";
+            // Write the same info to the file
+            outFile << event.first << ": " << event.second << "; ";
         }
         std::cout << "\n";
+        outFile << "\n"; // Write a newline to the file as well
     }
 }
 
 
-void runAlgorithm(circuit &c, boss &BB, int maxTime)
+void runAlgorithm(circuit &c, EventDriven &allStructures, int maxTime)
 {
 
-    boss copyBB;
+    EventDriven copyallStructures;
     map<string, int> counter;
     c.updateUsedGatesPtr();
     vector<shared_ptr<Logic_Gate>> usedGates = c.getUsedGatesPtr(); // Assuming getREF_usedGates is updated
 
 
-    copyBB = BB;
-    for(auto &row : BB)
+    copyallStructures = allStructures;
+    for(auto &row : allStructures)
     {
 
         int time = row.first;
         if(time <= maxTime)
         {
-            fillActivityList(c, BB,time, counter, copyBB);
+            fillActivityList(c, allStructures,time, counter, copyallStructures);
 
-            update_cirInputs_names(c,copyBB, BB,time, counter);
+            update_cirInputs_names(c,copyallStructures, allStructures,time, counter);
 
-            addOutputsToScheduledEvents(BB, time);
-            copyBB = BB;
+            addOutputsToScheduledEvents(allStructures, time);
+            copyallStructures = allStructures;
         }
         else
         {
 
             cout<<"Maximum time for simulation reached."<<endl;
-            printConsolidatedBB(BB);
+            printConsolidatedallStructures(allStructures);
             exit(0);
         }
 
@@ -283,191 +280,51 @@ void runAlgorithm(circuit &c, boss &BB, int maxTime)
 
 
 
-    printConsolidatedBB(BB);
+    printConsolidatedallStructures(allStructures);
 }
 
 
+int main() {
 
-int main()
-{
-    boss BB;
-    vector<vector<string>> components;
-    int x = 0;
-    int maxTime = 0;
+    char y;
 
-    cout<<"Choose which test circuit you want to run: "<<endl;
-    cout<<"1: BB Test 1"<<endl<<"2: BB Test 2"<<endl<<"3: BB Test 3"<<endl<<"4: BB Test 4"<<
-    endl<<"5: Test Circuit 1"<<endl<<"6: Test Circuit 2"<<endl<<"7: Test Circuit 3"<<endl<<
-    "8: Test Circuit 4"<<endl<<"9: Test Circuit 5"<<endl<<"10: Test Circuit 6"<<endl;
-    cin>>x;
-    cout<<"What is the maximum time of the simulation: "<<endl;
-    cin>>maxTime;
+   do
+   {
+       EventDriven allStructures;
+       circuit c;
+       string libFilePath, cirFilePath, stimFilePath;
+       int maxTime;
 
-    if(x==1)
-    {
-        //BB Test 1
-        circuit c4;
-
-        //Reading Files
-        c4.read_lib_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/cells.lib",
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/1.cir");
-        c4.read_stim_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/1.stim");
-        //c4.write_to_sim(
-        fill_scheduled_events(c4, BB);
-
-        runAlgorithm(c4, BB, maxTime);
-    }
-    else if(x==2)
-    {
-        //ERROR HANDLING
-        //BB Test 2
-        circuit c4;
-
-        c4.read_lib_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/cells.lib",
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/2.cir");
-        c4.read_stim_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_2.stim");
-        //c4.write_to_sim(
-        fill_scheduled_events(c4, BB);
-
-        runAlgorithm(c4, BB, maxTime);
-    }
-    else if(x==3)
-    {
-        //ERROR HANDLING
-        //BB Test 3
-        circuit c4;
-
-        c4.read_lib_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/cells.lib",
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/3.cir");
-        c4.read_stim_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/2(1).stim");
-        //c4.write_to_sim(
-        fill_scheduled_events(c4, BB);
-
-        runAlgorithm(c4, BB, maxTime);
-    }
-    else if(x==4)
-    {
-        //BB Test 4
-        circuit c4;
-
-        c4.read_lib_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/cells.lib",
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/4.cir");
-        c4.read_stim_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/2(1).stim");
-        //c4.write_to_sim(
-        fill_scheduled_events(c4, BB);
-
-        runAlgorithm(c4, BB, maxTime);
-
-    }
-    else if(x==5)
-    {
-        //Test Circuit 1
-        circuit c4;
-
-        c4.read_lib_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/LibraryFile.lib",
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_1.cir");
-        c4.read_stim_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_1.stim");
-        //c4.write_to_sim(
-        fill_scheduled_events(c4, BB);
-
-        runAlgorithm(c4, BB, maxTime);
-
-    }
-
-    else if(x==6)
-    {
-        //Test Circuit 2
-        circuit c4;
-
-        c4.read_lib_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/LibraryFile.lib",
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_2.cir");
-        c4.read_stim_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_4.stim");
-        //c4.write_to_sim(
-        fill_scheduled_events(c4, BB);
-
-        runAlgorithm(c4, BB, maxTime);
-
-    }
-    else if(x==7)
-    {
-        //Test Circuit 3
-        circuit c4;
-
-        c4.read_lib_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/LibraryFile.lib",
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_3.cir");
-        c4.read_stim_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_4.stim");
-        //c4.write_to_sim(
-        fill_scheduled_events(c4, BB);
-
-        runAlgorithm(c4, BB, maxTime);
-
-    }
-    else if(x==8)
-    {
-        //Test Circuit 4
-        circuit c4;
-
-        c4.read_lib_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/LibraryFile.lib",
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_4.cir");
-        c4.read_stim_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_4.stim");
-        //c4.write_to_sim(
-        fill_scheduled_events(c4, BB);
-
-        runAlgorithm(c4, BB, maxTime);
-
-    }
-    else if(x==9)
-    {
-        //Test Circuit 5
-        circuit c4;
-
-        c4.read_lib_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/LibraryFile.lib",
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_5.cir");
-        c4.read_stim_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_5.stim");
-        //c4.write_to_sim(
-        fill_scheduled_events(c4, BB);
-
-        runAlgorithm(c4, BB, maxTime);
-
-    }
-    else if(x==10)
-    {
-        //Test Circuit 6
-        circuit c4;
-
-        c4.read_lib_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/LibraryFile.lib",
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_6.cir");
-        c4.read_stim_file(
-                "C:/Users/Fawzy/Spring 2024/untitled/Test Circuits/Shalan Circuits/test_circuit_4.stim");
-        //c4.write_to_sim(
-        fill_scheduled_events(c4, BB);
-
-        runAlgorithm(c4, BB , maxTime);
-
-    }
+       cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Add this line
 
 
+       cout << "Enter the path to the library file: "<<endl;
+       getline(cin, libFilePath); // Use getline to allow spaces in the path
+
+       cout << "Enter the path to the circuit file: "<<endl;
+       getline(cin, cirFilePath);
+
+       cout << "Enter the path to the stimulus file: "<<endl;
+       getline(cin, stimFilePath);
+
+       cout << "What is the maximum time of the simulation? "<<endl;
+       cin >> maxTime;
+
+       cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Add this right before the first getline if not immediately after a previous cin >> input
+
+
+       // Assuming read_lib_file, read_stim_file are member functions of the 'circuit' class and take care of file reading.
+       c.readLibFile(libFilePath, cirFilePath);
+       c.readStimFile(stimFilePath);
+
+       // Now, you would proceed with your simulation logic
+       fill_scheduled_events(c, allStructures);
+       runAlgorithm(c, allStructures, maxTime);
+
+       cout<<"Simulate another circuit? (y/n) "<<endl;
+       cin>>y;
+   }while(y == 'y');
 
 
     return 0;
 }
-

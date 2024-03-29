@@ -79,97 +79,54 @@ public:
 
 
     // Setters
-    void setName(const string& name) {
-        this->name = name;
-    }
+    void setName(const string& name);
 
-    void setNumOfInputs(int num_Of_Inputs) {
-        this->num_Of_Inputs = num_Of_Inputs;
-    }
+    void setNumOfInputs(int num_Of_Inputs);
 
-    void setDelayPs(int delay_ps) {
-        this->delay_ps = delay_ps;
-    }
+    void setDelayPs(int delay_ps);
 
-    void setExpression(const string& expression) {
-        this->expression = expression;
-    }
+
+    void setExpression(const string& expression);
 
 //    void setCirInputs(const vector<tuple<char, bool, int>>& cirInputs) {
     //      this->cirInputs = cirInputs;
     //  }
 
-    void setCirCompName(const string& cirCompName) {
-        this->cirCompName = cirCompName;
-    }
+    void setCirCompName(const string& cirCompName);
 
 
-    void setCirInputName(string s, int x)
-    {
-        auto p = make_pair(s,x);
-        cir_Input_Names.push_back(p);
-    }
+    void setCirInputName(string s, int x);
 
-    void setCirOutput(bool cirOutput) {
-        this->cirOutput = cirOutput;
-    }
+    void setCirOutput(bool cirOutput);
 
-    void setCirType(const string& cirType) {
-        this->cirType = cirType;
-    }
+    void setCirType(const string& cirType);
 
-    void setCirOutputName(string cir_Output_Name)
-    {
-        this->cir_Output_Name = cir_Output_Name;
-    }
+    void setCirOutputName(string cir_Output_Name);
 
-    void set_cir_Input_Names(vector<pair<string, int>> cir_Input_Names)
-    {
-        this->cir_Input_Names = cir_Input_Names;
-    }
+    void set_cir_Input_Names(vector<pair<string, int>> cir_Input_Names);
     // Getters
-    string getName() const {
-        return name;
-    }
+    string getName() const;
 
-    int getNumOfInputs() const {
-        return num_Of_Inputs;
-    }
+    int getNumOfInputs() const;
 
-    int getDelayPs() const {
-        return delay_ps;
-    }
+    int getDelayPs() const;
 
-    string getExpression() const {
-        return expression;
-    }
+    string getExpression() const;
 
 
-    vector<pair<string,int>> get_cir_Input_Names() const
-    {
-        return cir_Input_Names;
-    }
 
-    vector<pair<string,int>>& getREF_cir_Input_Names()
-    {
-        return this->cir_Input_Names;
-    }
+    vector<pair<string,int>> get_cir_Input_Names() const;
 
-    string getCirCompName() const {
-        return cirCompName;
-    }
+    vector<pair<string,int>>& getREF_cir_Input_Names();
 
-    bool getCirOutput() const {
-        return cirOutput;
-    }
+    string getCirCompName() const;
 
-    string getCirType() const {
-        return cirType;
-    }
 
-    string getCirOutputName() const {
-        return cir_Output_Name;
-    }
+    bool getCirOutput() const;
+
+    string getCirType() const;
+
+    string getCirOutputName() const;
 
 
 

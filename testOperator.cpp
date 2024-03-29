@@ -8,12 +8,13 @@
 #include <utility>
 #include <sstream>
 #include <functional>
+#include <iostream>
 #include <regex>
 
 
 using namespace std;
 
-
+//This function decides the precedence of operators based on boolean algebra
 int precedence(char op){
     if (op == '~') return 3;
     if (op == '&') return 2;
@@ -21,6 +22,7 @@ int precedence(char op){
     return 0;
 }
 
+//This function applied the operation after the inputs have been correctly placed
 int applyOp(int a, int b, char op){
     switch(op){
         case '&': return a & b;
@@ -29,10 +31,11 @@ int applyOp(int a, int b, char op){
     }
 }
 
-// Function for unary operation
+//This function applied the operation after the input have been correctly placed for the NOT operator since it in Unary
 int applyUnaryOp(int a, char op){
     // Directly handling '~' as logical NOT for 0 and 1
     if(op == '~'){
+        //If a is 0 the output is 1 else output is 0
         return a == 0 ? 1 : 0;
     }
     return 0;
@@ -67,8 +70,108 @@ string replaceOperands(shared_ptr<Logic_Gate> gate, bool &samevalue)
     }
 }
 
+//Application of the shunting yard algorithm
+void shuntingYard(string &tokens, int &i, stack<int> &values,stack<char> &operators)
+{
 
+    // If token is a number
+    if(isdigit(tokens[i])){
+        int val = 0;
+        while(i < tokens.length() && isdigit(tokens[i])){
+            val = (val * 10) + (tokens[i] - '0');
+            i++;
+        }
+        values.push(val);
+        i--;
+    }
+    else if(tokens[i] == '('){
+        operators.push(tokens[i]);
+    }
+    else if(tokens[i] == ')'){
+        while(!operators.empty() && operators.top() != '('){
+            int val2 = values.top();
+            values.pop();
 
+            if(operators.top() != '~'){
+                int val1 = values.top();
+                values.pop();
+
+                char op = operators.top();
+                operators.pop();
+
+                values.push(applyOp(val1, val2, op));
+            } else {
+                // Direct application of unary operators before closing parenthesis
+                char op = operators.top();
+                operators.pop();
+
+                values.push(applyUnaryOp(val2, op));
+            }
+        }
+        // Pop the '(' operator
+        if(!operators.empty()) operators.pop();
+    }
+    else if(tokens[i] == '~'){
+        // Push '~' onto the operators stack to signify a pending unary operation
+        operators.push(tokens[i]);
+    }
+    else {
+        // When encountering a binary operator, check the precedence and apply operations accordingly
+        while(!operators.empty() && precedence(operators.top()) >= precedence(tokens[i])){
+            if(operators.top() == '~'){ // Handle unary operator '~' immediately
+                int val = values.top();
+                values.pop();
+
+                char op = operators.top();
+                operators.pop();
+
+                values.push(applyUnaryOp(val, op));
+            } else { // Handle binary operators based on precedence
+                int val2 = values.top();
+                values.pop();
+
+                if(!values.empty()){
+                    int val1 = values.top();
+                    values.pop();
+
+                    char op = operators.top();
+                    operators.pop();
+
+                    values.push(applyOp(val1, val2, op));
+                }
+            }
+        }
+        operators.push(tokens[i]); // Push the current operator onto the stack
+    }
+}
+
+//Final stage of shunting yard
+void FinishShuntingYard(stack<int> &numbers,stack<char> &operators)
+{
+    if(operators.top() == '~'){ // Direct application of unary operators at the end
+        int val = numbers.top();
+        numbers.pop();
+
+        char op = operators.top();
+        operators.pop();
+
+        numbers.push(applyUnaryOp(val, op));
+    } else if(numbers.size() >= 2){ // Ensure there are at least two operands for binary operations
+        int val2 = numbers.top();
+        numbers.pop();
+
+        int val1 = numbers.top();
+        numbers.pop();
+
+        char op = operators.top();
+        operators.pop();
+
+        numbers.push(applyOp(val1, val2, op));
+    }
+
+}
+
+//Function makes necessary calls for evaluating the expression
 bool evaluate(shared_ptr<Logic_Gate> g, int time){
 
 
@@ -76,112 +179,28 @@ bool evaluate(shared_ptr<Logic_Gate> g, int time){
     bool samenumber = true;
 
 
-    stack<int> numbers;
+    stack<int> values;
     //operators
-    stack<char> ops;
+    stack<char> operators;
 
-
+    //This function inserts the values from cirInputNames into the expression of the current gate
     string tokens = replaceOperands(g, samenumber);
 
-    for(int i = 0; i < tokens.length(); ++i){
+
+    for(int i = 0; i < tokens.length(); ++i)
+    {
         if(tokens[i] == ' ') continue;
 
-        // If token is a number
-        if(isdigit(tokens[i])){
-            int val = 0;
-            while(i < tokens.length() && isdigit(tokens[i])){
-                val = (val * 10) + (tokens[i] - '0');
-                i++;
-            }
-            numbers.push(val);
-            i--; // Adjust because the for loop also increments i
-        }
-        else if(tokens[i] == '('){
-            ops.push(tokens[i]);
-        }
-        else if(tokens[i] == ')'){
-            while(!ops.empty() && ops.top() != '('){
-                int val2 = numbers.top();
-                numbers.pop();
-
-                if(ops.top() != '~'){
-                    int val1 = numbers.top();
-                    numbers.pop();
-
-                    char op = ops.top();
-                    ops.pop();
-
-                    numbers.push(applyOp(val1, val2, op));
-                } else {
-                    // Direct application of unary operators before closing parenthesis
-                    char op = ops.top();
-                    ops.pop();
-
-                    numbers.push(applyUnaryOp(val2, op));
-                }
-            }
-            // Pop the '(' operator
-            if(!ops.empty()) ops.pop();
-        }
-        else if(tokens[i] == '~'){
-            // Push '~' onto the ops stack to signify a pending unary operation
-            ops.push(tokens[i]);
-        }
-        else {
-            // When encountering a binary operator, check the precedence and apply operations accordingly
-            while(!ops.empty() && precedence(ops.top()) >= precedence(tokens[i])){
-                if(ops.top() == '~'){ // Handle unary operator '~' immediately
-                    int val = numbers.top();
-                    numbers.pop();
-
-                    char op = ops.top();
-                    ops.pop();
-
-                    numbers.push(applyUnaryOp(val, op));
-                } else { // Handle binary operators based on precedence
-                    int val2 = numbers.top();
-                    numbers.pop();
-
-                    if(!numbers.empty()){
-                        int val1 = numbers.top();
-                        numbers.pop();
-
-                        char op = ops.top();
-                        ops.pop();
-
-                        numbers.push(applyOp(val1, val2, op));
-                    }
-                }
-            }
-            ops.push(tokens[i]); // Push the current operator onto the stack
-        }
+        shuntingYard(tokens, i, values, operators);
     }
 
-// Apply remaining operations in the ops stack
-    while(!ops.empty()){
-        if(ops.top() == '~'){ // Direct application of unary operators at the end
-            int val = numbers.top();
-            numbers.pop();
-
-            char op = ops.top();
-            ops.pop();
-
-            numbers.push(applyUnaryOp(val, op));
-        } else if(numbers.size() >= 2){ // Ensure there are at least two operands for binary operations
-            int val2 = numbers.top();
-            numbers.pop();
-
-            int val1 = numbers.top();
-            numbers.pop();
-
-            char op = ops.top();
-            ops.pop();
-
-            numbers.push(applyOp(val1, val2, op));
-        }
+// Apply remaining operations in the operators stack
+    while(!operators.empty())
+    {
+        FinishShuntingYard(values,operators);
     }
 
-    return numbers.top();
+    return values.top();
 }
 
 
@@ -189,7 +208,7 @@ int find_usedGates_Index(circuit &c,string comp_Name)
 {
     int index = 0;
 
-    for(auto gate : c.getusedGates())
+    for(auto gate : c.getUsedGates())
     {
 
         if(gate.getCirCompName() == comp_Name)
@@ -207,7 +226,7 @@ int find_usedGates_Index(circuit &c,string comp_Name)
 }
 
 
-
+//Calculates the correct time value that will be used for new outputs in the time stack
 int get_TimeStamp(shared_ptr<Logic_Gate> gate, int current_Time)
 {
 
